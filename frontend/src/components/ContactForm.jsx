@@ -104,6 +104,7 @@ const ContactForm = ({ setShowForm }) => {
                 value={form.email}
                 onChange={handleChange}
                 className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500"
+                required
             />
 
             <button
