@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState, useMemo } from "react";
+import { createContext, useState, useMemo, useContext } from "react";
 import {
     createContact,
     getContacts,
@@ -13,27 +13,21 @@ export const ContactProvider = ({ children }) => {
     const [editingContact, setEditingContact] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
 
-    const loadContacts = async () => {
+    const initializeContacts = async () => {
         try {
             const data = await getContacts();
             setContacts(data);
         } catch (error) {
-            console.error("Error loading contacts:", error);
-            throw error;
+            console.error("Error initializing contacts:", error);
         }
     };
-
-    useEffect(() => {
-        loadContacts();
-    }, []);
 
     const addContact = async (data) => {
         try {
             await createContact(data);
-            loadContacts();
+            initializeContacts();
         } catch (error) {
             console.error("Error adding contact:", error);
-            throw error;
         }
     };
 
@@ -41,28 +35,24 @@ export const ContactProvider = ({ children }) => {
         try {
             await updateContactById(id, data);
             setEditingContact(null);
-            loadContacts();
+            initializeContacts();
         } catch (error) {
             console.error("Error updating contact:", error);
-            throw error;
         }
     };
 
     const deleteContact = async (id) => {
         try {
             await deleteContactById(id);
-            loadContacts();
+            initializeContacts();
         } catch (error) {
             console.error("Error deleting contact:", error);
-            throw error;
         }
     };
 
-    // Filter contacts by name
     const filteredContacts = useMemo(() => {
         if (!searchQuery) return contacts;
-
-        return contacts.filter((contact) =>
+        return contacts.filter(contact =>
             contact.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
     }, [contacts, searchQuery]);
@@ -79,6 +69,7 @@ export const ContactProvider = ({ children }) => {
                 deleteContact,
                 editingContact,
                 setEditingContact,
+                initializeContacts,
             }}
         >
             {children}
@@ -86,15 +77,10 @@ export const ContactProvider = ({ children }) => {
     );
 };
 
-
-// createContext()
-// → Creates a shared box
-
-// Provider
-// → Puts data into the box
-
-// value={{  }}
-// → Actual data inside the box
-
-// useContext()
-// → Takes data from the box
+export const useContacts = () => {
+    const context = useContext(ContactContext);
+    if (!context) {
+        throw new Error("useContacts must be used within a ContactProvider");
+    }
+    return context;
+};

@@ -1,4 +1,4 @@
-import { useContacts } from "../hooks/useContacts";
+import { useContacts } from "../context/ContactContext";
 
 const ContactSearch = () => {
     const { searchQuery, setSearchQuery } = useContacts();
@@ -10,7 +10,7 @@ const ContactSearch = () => {
                 placeholder="Search by contact name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full p-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400"
+                className="w-full p-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500  "
             />
         </div>
     );
