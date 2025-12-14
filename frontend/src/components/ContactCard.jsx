@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useContacts } from "../context/ContactContext";
 import { useTheme } from "../context/ThemeContext";
+import { FiPhone } from "react-icons/fi";
 
 const ContactCard = ({ contact }) => {
     const { theme } = useTheme();
@@ -49,7 +50,7 @@ const ContactCard = ({ contact }) => {
                 }`}
         >
             {/* LEFT CONTENT */}
-            <div className="flex-1 min-w-0 sm:mr-4 xs:mr-4">
+            <div className="flex-1 min-w-0 ml-3">
                 <p
                     className={`font-semibold truncate
                         ${theme === "dark" ? "text-white" : "text-gray-900"}`}
@@ -69,15 +70,21 @@ const ContactCard = ({ contact }) => {
             <div className="flex gap-2">
                 <button
                     onClick={() => handleCall(contact.phone)}
-                    className="px-3 py-1 font-semibold text-green-500 rounded hover:bg-green-100"
+                    className="px-3 py-1 font-semibold text-green-500 rounded hover:bg-green-100 sm:hover:bg-green-100"
                     disabled={loadingCall}
                 >
-                    {loadingCall ? "Calling..." : "Call 📞"}
+                    {loadingCall
+                        ? "Calling..."
+                        : (
+                            <> Call <FiPhone className="inline ml-1 mb-0.5" />
+                            </>
+                        )
+                    }
                 </button>
 
                 <button
                     onClick={() => handleEdit(contact)}
-                    className="px-3 py-1 font-semibold text-orange-500 rounded hover:bg-orange-100"
+                    className="px-3 py-1 font-semibold text-orange-500 rounded hover:bg-orange-100 sm:hover:bg-orange-100"
                     disabled={loadingEdit}
                 >
                     {loadingEdit ? "Loading..." : "Edit"}
@@ -85,7 +92,7 @@ const ContactCard = ({ contact }) => {
 
                 <button
                     onClick={() => handleDelete(contact._id)}
-                    className="px-3 py-1 font-semibold text-red-500 rounded hover:bg-red-100"
+                    className="px-3 py-1 font-semibold text-red-500 rounded hover:bg-red-100 sm:hover:bg-red-100"
                     disabled={loadingDelete}
                 >
                     {loadingDelete ? "Deleting..." : "Delete"}

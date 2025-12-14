@@ -86,7 +86,7 @@ const ContactForm = ({ setShowForm }) => {
                 value={form.name}
                 onChange={handleChange}
                 required
-                className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500"
+                className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900"
             />
 
             <input
@@ -95,7 +95,7 @@ const ContactForm = ({ setShowForm }) => {
                 value={form.phone}
                 onChange={handleChange}
                 required
-                className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500"
+                className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900"
             />
 
             <input
@@ -103,7 +103,7 @@ const ContactForm = ({ setShowForm }) => {
                 placeholder="Email"
                 value={form.email}
                 onChange={handleChange}
-                className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500"
+                className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900"
                 required
             />
 
@@ -118,19 +118,19 @@ const ContactForm = ({ setShowForm }) => {
             {showMore && (
                 <>
                     <input name="address" placeholder="Address" value={form.address} onChange={handleChange}
-                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500" />
+                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900" />
 
                     <input name="company" placeholder="Company" value={form.company} onChange={handleChange}
-                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500" />
+                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900" />
 
                     <input name="jobTitle" placeholder="Job Title" value={form.jobTitle} onChange={handleChange}
-                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500" />
+                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900" />
 
                     <input type="date" name="birthday" value={form.birthday || ""} onChange={handleChange}
-                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500" />
+                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900" />
 
                     <textarea name="notes" placeholder="Notes" value={form.notes} onChange={handleChange}
-                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500" />
+                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900" />
                 </>
             )}
 
