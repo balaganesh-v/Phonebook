@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/contacts";
+// Use your deployed backend URL
+const API_URL = "https://phonebook-1uj9.onrender.com/contacts";
 
 // CREATE
 export const createContact = async (data) => {
