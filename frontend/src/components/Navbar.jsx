@@ -1,15 +1,26 @@
-import React from "react";
-import { CheckCircle } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
-const NavBar = () => {
+const Navbar = () => {
+    const { theme, toggleTheme } = useTheme();
+
     return (
-        <div className="w-full p-6 bg-gray-700 text-white flex items-center justify-center shadow-md">
-            <div className="flex flex-row items-center gap-3 text-2xl font-semibold">
-                <CheckCircle className="text-green-400 w-7 h-7" />
+        <div
+            className={`w-full p-6 flex justify-between shadow-md
+                ${theme === "light"
+                    ? "bg-gray-300 text-gray-700"
+                    : "bg-gray-600 text-white"
+                }`}
+        >
+            <div className="flex items-center gap-3 text-xl font-semibold">
                 <span>Yuhnie❤️!!</span>
             </div>
+            <button onClick={toggleTheme}
+                className={`flex text-xl rounded-full text-center align-center justify-center ${theme === "light" ? "bg-gray-700" : "bg-gray-100" }`}
+            >
+                {theme === "light" ? "🌙" : "☀️"}
+            </button>
         </div>
     );
 };
 
-export default NavBar;
+export default Navbar;

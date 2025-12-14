@@ -1,29 +1,46 @@
 import { useContacts } from "../hooks/useContacts";
+import { useTheme } from "../context/ThemeContext"
 
 const ContactCard = ({ contact }) => {
-    const { deleteContact, setEditingContact } = useContacts();
+    const {theme} = useTheme();
+
+    const { setEditingContact, deleteContact } = useContacts();
+
+    const handleCall = (phone) => {
+        window.location.href = `tel:${phone}`;
+    };
 
     return (
-        <div className="bg-white p-4 rounded-lg shadow flex justify-between hover:shadow-lg">
-            <div>
-                <h2 className="text-lg font-semibold mb-1">{contact.name}</h2>
-                <p className="text-sm text-gray-700">{contact.phone}</p>
-                <p className="text-sm text-gray-700">{contact.email}</p>
+        <div className={`p-3 rounded-lg shadow flex justify-between items-center hover:shadow-lg
+            ${theme === "dark" ? "bg-gray-200 text-white" : "bg-gray-200"}`}>
+            <div >
+                <p className={`font-semibold ${theme === "dark"
+                    ? "text-gray-900"
+                    : "text-gray-900"
+                }`}>{contact.name}</p>
+                <p className="text-sm text-gray-600">{contact.phone}</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex gap-2">
+                <button
+                    onClick={() => handleCall(contact.phone) }
+                    className="px-3 py-1 font-semibold text-green-500 rounded hover:bg-green-100"
+                >
+                    Call 📞
+                </button>
                 <button
                     onClick={() => setEditingContact(contact)}
-                    className="text-lg text-blue-600 hover:text-blue-800"
+                    className="px-3 py-1 font-semibold text-orange-500 rounded hover:bg-orange-100"
                 >
                     Edit
                 </button>
                 <button
                     onClick={() => deleteContact(contact._id)}
-                    className="text-lg text-red-600 hover:text-red-800"
+                    className="px-3 py-1 fontsemibold text-red-500 rounded hover:bg-red-100"
                 >
                     Delete
                 </button>
+                
             </div>
         </div>
     );
