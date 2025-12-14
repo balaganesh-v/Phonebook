@@ -4,7 +4,7 @@ const ContactCard = ({ contact }) => {
     const { deleteContact, setEditingContact } = useContacts();
 
     return (
-        <div className="bg-white p-4 rounded shadow flex justify-between hover:shadow-lg ">
+        <div className="bg-white p-4 rounded-lg shadow flex justify-between hover:shadow-lg">
             <div>
                 <h2 className="text-lg font-semibold mb-1">{contact.name}</h2>
                 <p className="text-sm text-gray-700">{contact.phone}</p>
