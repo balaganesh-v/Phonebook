@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useContacts } from "../context/ContactContext";
+import { useTheme } from "../context/ThemeContext";
 
 const ContactForm = ({ setShowForm }) => {
     const { addContact, updateContact, editingContact, setEditingContact } = useContacts();
+    const { theme } = useTheme();
 
     const [showMore, setShowMore] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -24,7 +26,7 @@ const ContactForm = ({ setShowForm }) => {
 
             if (formattedContact.birthday) {
                 const dob = new Date(formattedContact.birthday);
-                formattedContact.birthday = dob.toISOString().split("T")[0];
+                formattedContact.birthday = !isNaN(dob) ? dob.toISOString().split("T")[0] : "";
             }
 
             setForm(formattedContact);
@@ -39,7 +41,6 @@ const ContactForm = ({ setShowForm }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-
         if (isSubmitting) return;
 
         setIsSubmitting(true);
@@ -78,15 +79,24 @@ const ContactForm = ({ setShowForm }) => {
         setEditingContact(null);
     };
 
+    const inputClasses = `w-full p-2 mb-2 border rounded focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500
+        ${theme === "dark" ? "bg-gray-800 border-gray-600 text-white placeholder-gray-400" : "bg-white border-gray-600 text-gray-900 placeholder-gray-500"}`;
+
+    const buttonClasses = (bgColor) =>
+        `flex-1 py-2 rounded text-white ${isSubmitting ? "cursor-not-allowed opacity-60" : bgColor} hover:brightness-110`;
+
     return (
-        <form onSubmit={handleSubmit} className="max-w-2xl bg-white p-4 rounded shadow mb-6">
+        <form
+            onSubmit={handleSubmit}
+            className={`max-w-2xl p-4 rounded shadow mb-6 ${theme === "dark" ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}
+        >
             <input
                 name="name"
                 placeholder="Name"
                 value={form.name}
                 onChange={handleChange}
                 required
-                className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900"
+                className={inputClasses}
             />
 
             <input
@@ -95,42 +105,65 @@ const ContactForm = ({ setShowForm }) => {
                 value={form.phone}
                 onChange={handleChange}
                 required
-                className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900"
+                className={inputClasses}
             />
 
-            <input
-                name="email"
-                placeholder="Email"
-                value={form.email}
-                onChange={handleChange}
-                className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900"
-                required
-            />
 
             <button
                 type="button"
-                onClick={() => setShowMore((prev) => !prev)}
-                className="rounded px-3 py-1 bg-green-400 text-white mb-2 hover:bg-green-500"
+                onClick={() => setShowMore(prev => !prev)}
+                className={`mb-2 bg-transparent p-0 font-medium transition-colors ${theme === "dark"
+                        ? "text-gray-300 hover:text-white"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
             >
-                {showMore ? "− Show less" : "+ Show More"}
+                {showMore ? "Show less" : "Show more"}
             </button>
 
             {showMore && (
                 <>
-                    <input name="address" placeholder="Address" value={form.address} onChange={handleChange}
-                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900" />
-
-                    <input name="company" placeholder="Company" value={form.company} onChange={handleChange}
-                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900" />
-
-                    <input name="jobTitle" placeholder="Job Title" value={form.jobTitle} onChange={handleChange}
-                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900" />
-
-                    <input type="date" name="birthday" value={form.birthday || ""} onChange={handleChange}
-                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900" />
-
-                    <textarea name="notes" placeholder="Notes" value={form.notes} onChange={handleChange}
-                        className="w-full p-2 mb-2 border rounded border-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-500 text-gray-900" />
+                    <input
+                        name="email"
+                        placeholder="Email"
+                        value={form.email}
+                        onChange={handleChange}
+                        className={inputClasses}
+                    />
+                    <input
+                        name="address"
+                        placeholder="Address"
+                        value={form.address}
+                        onChange={handleChange}
+                        className={inputClasses}
+                    />
+                    <input
+                        name="company"
+                        placeholder="Company"
+                        value={form.company}
+                        onChange={handleChange}
+                        className={inputClasses}
+                    />
+                    <input
+                        name="jobTitle"
+                        placeholder="Job Title"
+                        value={form.jobTitle}
+                        onChange={handleChange}
+                        className={inputClasses}
+                    />
+                    <input
+                        type="date"
+                        name="birthday"
+                        value={form.birthday || ""}
+                        onChange={handleChange}
+                        className={inputClasses}
+                    />
+                    <textarea
+                        name="notes"
+                        placeholder="Notes"
+                        value={form.notes}
+                        onChange={handleChange}
+                        className={inputClasses}
+                    />
                 </>
             )}
 
@@ -138,11 +171,7 @@ const ContactForm = ({ setShowForm }) => {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`flex-1 py-2 rounded text-white
-                        ${isSubmitting
-                            ? "bg-blue-400 cursor-not-allowed"
-                            : "bg-blue-500 hover:bg-blue-600"
-                        }`}
+                    className={buttonClasses(theme === "dark" ? "bg-blue-600" : "bg-blue-500")}
                 >
                     {isSubmitting
                         ? editingContact
@@ -157,11 +186,7 @@ const ContactForm = ({ setShowForm }) => {
                     type="button"
                     disabled={isSubmitting}
                     onClick={handleCancel}
-                    className={`flex-1 py-2 rounded text-white
-                        ${isSubmitting
-                            ? "bg-gray-300 cursor-not-allowed"
-                            : "bg-gray-400 hover:bg-gray-500"
-                        }`}
+                    className={buttonClasses(theme === "dark" ? "bg-gray-700" : "bg-gray-400")}
                 >
                     Cancel
                 </button>
