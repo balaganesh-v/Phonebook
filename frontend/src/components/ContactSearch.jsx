@@ -8,8 +8,8 @@ const ContactSearch = () => {
     return (
         <div
             className={`w-full max-w-2xl mx-auto mb-4  py-1 rounded-lg border transition-shadow ${theme === "dark"
-                    ? "bg-gray-800 border-gray-700 text-white hover:shadow-md"
-                    : "bg-white border-gray-400 text-gray-900 hover:shadow-md"
+                    ? "text-white placeholder-gray-400 bg-gray-800 border-gray-700  hover:shadow-md"
+                    : "text-gray-900 placeholder-gray-200 bg-gray-100 border-gray-400  hover:shadow-md"
                 }`}
         >
             <input
