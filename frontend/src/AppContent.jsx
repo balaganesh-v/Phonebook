@@ -14,8 +14,8 @@ export default function AppContent() {
         >
             <Navbar />
             <div className="pt-10 flex flex-col items-center justify-center">
-                <h1 className={ `${theme === "dark" ? "text-white" : "text-blue-500"} text-3xl font-bold text-center mb-10 `}>
-                    Phone Book Application
+                <h1 className={ `${theme === "dark" ? "text-white" : "text-blue-500"} text-2xl sm:text-2xl md:text-3xl font-bold text-center mb-10 `}>
+                    Phone Book
                 </h1>
                 <Home />
             </div>

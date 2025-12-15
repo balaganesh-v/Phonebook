@@ -5,7 +5,7 @@ const Navbar = () => {
 
     return (
         <div
-            className={`w-full p-6 flex justify-between shadow-md
+            className={`w-full px-6 py-4 flex justify-between shadow-md
                 ${theme === "light"
                     ? "bg-gray-300 text-gray-700"
                     : "bg-gray-600 text-white"
