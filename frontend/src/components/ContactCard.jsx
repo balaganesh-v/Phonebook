@@ -14,7 +14,6 @@ const ContactCard = ({ contact }) => {
 
     const handleCall = (phone) => {
         setLoadingCall(true);
-        // simulate call delay
         setTimeout(() => {
             window.location.href = `tel:${phone}`;
             setLoadingCall(false);
@@ -24,7 +23,7 @@ const ContactCard = ({ contact }) => {
     const handleEdit = (contact) => {
         setLoadingEdit(true);
         setEditingContact(contact);
-        setTimeout(() => setLoadingEdit(false), 300); // simulate a small delay
+        setTimeout(() => setLoadingEdit(false), 300);
     };
 
     const handleDelete = async (id) => {
@@ -38,6 +37,9 @@ const ContactCard = ({ contact }) => {
         }
     };
 
+    // Extract first letter and capitalize
+    const initial = contact.name ? contact.name.charAt(0).toUpperCase() : "?";
+
     return (
         <div
             className={`p-3 rounded-lg shadow mb-3 transition
@@ -45,41 +47,47 @@ const ContactCard = ({ contact }) => {
                 sm:flex-row xs:flex-row
                 hover:shadow-md
                 ${theme === "dark"
-                    ? "bg-gray-700 text-white"
-                    : "bg-gray-200 text-gray-900"
+                    ? "bg-gray-700 text-white hover:bg-gray-600"
+                    : "bg-gray-200 text-gray-900 hover:bg-gray-300"
                 }`}
         >
-            {/* LEFT CONTENT */}
-            <div className="flex-1 min-w-0 ml-3">
-                <p
-                    className={`font-semibold truncate
-                        ${theme === "dark" ? "text-white" : "text-gray-900"}`}
-                    title={contact.name}
+            {/* LEFT CONTENT: Avatar + Name */}
+            <div className="flex items-center flex-1 min-w-0 ml-0 sm:ml-3 gap-3">
+                {/* Avatar */}
+                <div
+                    className={`flex items-center justify-center w-12 h-12 rounded-full font-bold text-lg ${
+                        theme === "dark" ? "bg-gray-500 text-white hover:bg-gray-400 " : "bg-gray-400 text-white hover:bg-gray-500 "
+                    }`}
                 >
-                    {contact.name}
-                </p>
-                <p
-                    className={`text-sm truncate
-                        ${theme === "dark" ? "text-gray-300" : "text-gray-600"}`}
-                >
-                    {contact.phone}
-                </p>
+                    {initial}
+                </div>
+
+                {/* Name + Phone */}
+                <div className="min-w-0">
+                    <p
+                        className={`font-semibold truncate
+                            ${theme === "dark" ? "text-white" : "text-gray-900"}`}
+                        title={contact.name}
+                    >
+                        {contact.name}
+                    </p>
+                    <p
+                        className={`text-sm truncate
+                            ${theme === "dark" ? "text-gray-300" : "text-gray-600"}`}
+                    >
+                        {contact.phone}
+                    </p>
+                </div>
             </div>
 
             {/* RIGHT ACTIONS */}
             <div className="flex gap-2">
                 <button
                     onClick={() => handleCall(contact.phone)}
-                    className="px-3 py-1 font-semibold text-green-500 rounded hover:bg-green-100 sm:hover:bg-green-100"
+                    className="px-2 py-1 font-semibold text-green-500 rounded hover:bg-green-100 sm:hover:bg-green-100"
                     disabled={loadingCall}
                 >
-                    {loadingCall
-                        ? "Calling..."
-                        : (
-                            <> Call <FiPhone className="inline ml-1 mb-0.5" />
-                            </>
-                        )
-                    }
+                    {loadingCall ? "Calling..." : <> Call <FiPhone className="inline ml-1 mb-0.5" /> </>}
                 </button>
 
                 <button
