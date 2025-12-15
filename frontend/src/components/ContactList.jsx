@@ -15,7 +15,7 @@ const ContactList = () => {
     }
 
     return (
-        <div className="space-y-2 ">
+        <div className="space-y-2 mt-8">
             {filteredContacts.map(contact => (
                 <ContactCard key={contact._id} contact={contact} />
             ))}
