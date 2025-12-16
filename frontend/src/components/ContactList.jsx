@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useContacts } from "../context/ContactContext";
-import ContactCard from "./ContactCard";
+import ContactCard from "./ContactCard/ContactCard";
 
 const ContactList = () => {
     const { filteredContacts, initializeContacts } = useContacts();
