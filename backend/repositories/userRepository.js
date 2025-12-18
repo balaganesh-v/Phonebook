@@ -1,9 +1,5 @@
 import User from "../models/User.js";
 
-/**
- * Repository: Database operations only
- */
-
 export const createUser = async (data) => {
     return User.create(data);
 };
@@ -17,9 +13,7 @@ export const findUserByPhone = async (phone) => {
 };
 
 export const findUserByEmailOrPhone = async (email, phone) => {
-    return User.findOne({
-        $or: [{ email }, { phone }]
-    });
+    return User.findOne({ $or: [{ email }, { phone }] });
 };
 
 export const findUserById = async (id) => {
@@ -27,10 +21,7 @@ export const findUserById = async (id) => {
 };
 
 export const updateUserById = async (id, data) => {
-    return User.findByIdAndUpdate(id, data, {
-        new: true,
-        runValidators: true
-    });
+    return User.findByIdAndUpdate(id, data, { new: true, runValidators: true });
 };
 
 export const deleteUserById = async (id) => {

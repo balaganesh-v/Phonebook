@@ -39,6 +39,14 @@ export const verifyToken = (token) => {
     }
 };
 
+export const decodedToken = (token) => {
+    try{
+        return jwt.decode(token);
+    }catch(error){
+        throw new Error("Error decoding token");
+    }
+};
+
 export default {
     hashPassword,
     comparePassword,
