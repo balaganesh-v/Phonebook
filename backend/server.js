@@ -1,61 +1,64 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
+import http from "http";
+import { Server } from "socket.io";
 
 import connectDB from "./config/db.js";
-import contactRoutes from "./controllers/contactController.js";
 import authRoutes from "./routes/authRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
+import callSocketHandler from "./sockets/callSocket.js"; // call socket
 
-// Node.js built-in module to create a raw HTTP server (required for Socket.IO)
-import http from "http";
-// Imports Socket.IO server to enable WebSocket connections
-import { Server } from "socket.io";
-// Imports Socket.IO event handler logic
-import socketHandler from "./sockets/index.js";
+import { decodedToken } from "./utils/security.js";
 
-
-
-// Load environment variables from .env file
 dotenv.config();
-
-// Connects to MongoDB database
 await connectDB();
 
-// Creates an Express application
 const app = express();
-console.log("🏡Express instance Created Successfully for handling the routes")
-app.use(cors({ origin: "*", credentials: true }));
+
+// Middleware
 app.use(express.json());
+app.use(cookieParser());
+app.use(
+    cors({
+        origin: "http://localhost:3000",
+        credentials: true
+    })
+);
+
+// Routes
 app.use("/auth", authRoutes);
 app.use("/contacts", contactRoutes);
 app.get("/", (req, res) => {
-    res.send("Phone Contacts Backend is Running on Live❤️");
+    res.send("Phone Contacts Backend is Running ❤️");
 });
 
-/* Socket.IO */
-
-// Create a Node.js HTTP server and attach the Express app.
-// Needed because Socket.IO requires a raw HTTP server to manage
-// long-lived connections and WebSocket upgrades.
+// Create HTTP server for Socket.IO
 const server = http.createServer(app);
 
-// Create and attach a Socket.IO server to the same HTTP server.
-// This allows REST APIs and real-time communication to run
-// on the same port and share the same server.
+// Socket.IO server
 const io = new Server(server, {
-    cors: { origin: "*" } // Allows frontend clients to connect (development use)
+    cors: {
+        origin: "http://localhost:3000",
+        credentials: true
+    }
 });
 
-// Confirms that the Socket.IO server is ready.
-console.log("Socket.IO server initialized");
+// Socket authentication
+io.use((socket, next) => {
+    try {
+        const token = socket.handshake.auth?.token;
+        if (!token) throw new Error("Unauthorized");
+        socket.user = decodedToken(token);
+        next();
+    } catch {
+        next(new Error("Unauthorized"));
+    }
+});
 
-// Register all socket events (connect, message, disconnect).
-// Keeps socket logic separate from server setup.
-socketHandler(io);
+callSocketHandler(io);
 
-//start to run the backend server
-const PORT = process.env.PORT || 5000;
-server.listen(PORT, () =>
-    // Starts the HTTP + Socket.IO server on the specified port
-    console.log(`🌍 Server running on http://localhost:${PORT}`)
-);
+server.listen(5000, () => {
+    console.log("Server running on http://localhost:5000");
+});
