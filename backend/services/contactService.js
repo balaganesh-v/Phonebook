@@ -1,36 +1,29 @@
-import * as contactRepository from "../repositories/contactRepository.js";
+import * as contactRepo from "../repositories/contactRepository.js";
+import User from "../models/User.js";
 
-export const createContact = async (data) => {
-    if (!data.name || !data.phone) {
-        throw new Error("Name and phone are required");
-    }
-    return await contactRepository.createContact(data);
+//Create a new contact for a Logged in User
+export const createNewContact = async (data, user) => {
+    const linkedUser = await User.findOne({ phone: data.phone });
+
+    return contactRepo.createContact({
+        ...data,
+        user: user.id,
+        linkedUser: linkedUser ? linkedUser._id : null
+    });
 };
 
-export const getAllContacts = async () => {
-    return await contactRepository.getAllContacts();
-};
+//Get All contacts for a Logged in User
+export const getUserContacts = (user) =>
+    contactRepo.getContactsByUser(user.id);
 
-export const getContactById = async (id) => {
-    const contact = await contactRepository.getContactById(id);
-    if (!contact) {
-        throw new Error("Contact not found");
-    }
-    return contact;
-};
+//Get a single contact by ID for a Logged in User
+export const getUserContactById = (id, user) =>
+    contactRepo.getContactById(id, user.id);
 
-export const updateContact = async (id, data) => {
-    const updated = await contactRepository.updateContact(id, data);
-    if (!updated) {
-        throw new Error("Contact not found");
-    }
-    return updated;
-};
+//Update a contact by ID for a Logged in User
+export const updateUserContact = (id, data, user) =>
+    contactRepo.updateContactById(id, user.id, data);
 
-export const deleteContact = async (id) => {
-    const deleted = await contactRepository.deleteContact(id);
-    if (!deleted) {
-        throw new Error("Contact not found");
-    }
-    return deleted;
-};
+//Delete a contact by ID for a Logged in User
+export const deleteUserContact = (id, user) =>
+    contactRepo.deleteContactById(id, user.id);

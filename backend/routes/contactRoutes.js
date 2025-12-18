@@ -7,7 +7,11 @@ import {
     deleteContact
 } from "../controllers/contactController.js";
 
+import { authenticate } from "../middleware/authMiddleware.js";
+
 const router = express.Router();
+
+router.use(authenticate); // 🔒 protect all routes
 
 router.post("/", createContact);
 router.get("/", getAllContacts);

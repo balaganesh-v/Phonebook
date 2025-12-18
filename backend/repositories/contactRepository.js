@@ -4,21 +4,18 @@ export const createContact = (data) => {
     return Contact.create(data);
 };
 
-export const getAllContacts = () => {
-    return Contact.find().sort({ createdAt: -1 });
+export const getContactsByUser = (userId) => {
+    return Contact.find({ user: userId }).sort({ createdAt: -1 });
 };
 
-export const getContactById = (id) => {
-    return Contact.findById(id);
+export const getContactById = (id, userId) => {
+    return Contact.findOne({ _id: id, user: userId });
 };
 
-export const updateContact = (id, data) => {
-    return Contact.findByIdAndUpdate(id, data, {
-        new: true,
-        runValidators: true
-    });
+export const updateContactById = (id, userId, data) => {
+    return Contact.findOneAndUpdate({ _id: id, user: userId }, data, { new: true });
 };
 
-export const deleteContact = (id) => {
-    return Contact.findByIdAndDelete(id);
+export const deleteContactById = (id, userId) => {
+    return Contact.findOneAndDelete({ _id: id, user: userId });
 };
