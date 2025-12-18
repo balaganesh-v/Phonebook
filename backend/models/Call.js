@@ -1,37 +1,37 @@
-// models/Call.js
-import { v4 as uuidv4 } from "uuid";
 import mongoose from "mongoose";
+import { v4 as uuidv4 } from "uuid";
 
-const callSchema = new mongoose.Schema({
-    user: {                                  // 👈 owner of the call
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-        index: true
-    },
-
+const callSchema = new mongoose.Schema(
+{
     callId: {
         type: String,
         default: () => uuidv4(),
         unique: true
     },
 
+    user: {                            // call owner (caller)
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        index: true
+    },
+
     caller: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Contact",
+        ref: "User",
         required: true
     },
 
     receiver: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Contact",
+        ref: "User",
         required: true,
         index: true
     },
 
     callType: {
         type: String,
-        enum: ["audio", "video", "voice"],
+        enum: ["audio", "video"],
         required: true
     },
 
@@ -43,8 +43,10 @@ const callSchema = new mongoose.Schema({
 
     startedAt: { type: Date, default: Date.now },
     endedAt: { type: Date, default: null },
-    duration: { type: Number, default: 0 }   // seconds
-}, { timestamps: true, versionKey: false });
+    duration: { type: Number, default: 0 }
 
-const Call = mongoose.model("Call", callSchema);
-export default Call;
+},
+{ timestamps: true, versionKey: false }
+);
+
+export default mongoose.model("Call", callSchema);

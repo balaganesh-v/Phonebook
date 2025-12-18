@@ -1,12 +1,17 @@
-const contactSchema = new mongoose.Schema({
-    user: {                                   // owner of contact
+import mongoose from "mongoose";
+
+const contactSchema = new mongoose.Schema(
+{
+    // Owner of this contact (logged-in user)
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
         index: true
     },
 
-    linkedUser: {                             // 👈 if this contact is a registered user
+    // If this contact is also a registered user
+    linkedUser: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         default: null
@@ -21,4 +26,8 @@ const contactSchema = new mongoose.Schema({
     birthday: { type: Date },
     notes: { type: String, default: "" }
 
-}, { timestamps: true, versionKey: false });
+},
+{ timestamps: true, versionKey: false }
+);
+
+export default mongoose.model("Contact", contactSchema);
