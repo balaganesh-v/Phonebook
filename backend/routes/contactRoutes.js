@@ -1,17 +1,18 @@
 import express from "express";
 import {
-    createContact,
-    getAllContacts,
-    getContactById,
-    updateContact,
-    deleteContact
+  createContact,
+  getAllContacts,
+  getContactById,
+  updateContact,
+  deleteContact
 } from "../controllers/contactController.js";
 
 import { authenticate } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.use(authenticate); // 🔒 protect all routes
+// 🔒 Protect all routes
+router.use(authenticate);
 
 router.post("/", createContact);
 router.get("/", getAllContacts);

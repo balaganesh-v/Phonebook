@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+
 import authRoutes from "./routes/authRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 const app = express();
 
@@ -10,6 +12,7 @@ app.use(cookieParser());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 app.use("/auth", authRoutes);
+app.use("/contacts", contactRoutes)
 
 app.get("/", (req, res) => {
     res.send("Phone Contacts Backend is running ❤️");

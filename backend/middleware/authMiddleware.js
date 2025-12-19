@@ -1,20 +1,18 @@
-import { verifyToken } from "../utils/security.js";
+import { decodedToken } from "../utils/security.js";
+import User from "../models/User.js";
 
-export const authenticate = (req, res, next) => {
-    const token = req.cookies.token;
-
-    if (!token) {
-        return res.status(401).json({ message: "Authentication required" });
-    }
-
+export const authenticate = async (req, res, next) => {
     try {
-        const decoded = verifyToken(token);
-        req.user = {
-            id: decoded.id,
-            email: decoded.email
-        };
+        const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
+        if (!token) throw new Error("Unauthorized");
+
+        const decoded = decodedToken(token);
+        const user = await User.findById(decoded.id);
+        if (!user) throw new Error("User not found");
+
+        req.user = user; // Attach user to request
         next();
     } catch (error) {
-        return res.status(403).json({ message: "Invalid or expired token" });
+        res.status(401).json({ message: error.message });
     }
 };
