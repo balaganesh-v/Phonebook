@@ -1,24 +1,19 @@
-import authService from "../services/userService.js";
+import { registerNewUser, loginUser } from "../services/userService.js";
 
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
     try {
-        const result = await authService.register(req.body, res);
+        const result = await registerNewUser(req.body, res);
         res.status(201).json(result);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        next(error);
     }
 };
 
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
     try {
-        const result = await authService.login(req.body, res);
+        const result = await loginUser(req.body, res);
         res.status(200).json(result);
     } catch (error) {
-        res.status(401).json({ message: error.message });
+        next(error);
     }
-};
-
-export default {
-    register,
-    login
 };
