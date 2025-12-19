@@ -17,3 +17,12 @@ export const login = async (req, res, next) => {
         next(error);
     }
 };
+
+export const getCurrentUser = async (req, res, next) => {
+    try{
+        const user = req.user; // Assuming user is attached to req in auth middleware
+        res.status(200).json({ user });
+    }catch(error){
+        next(error);
+    }
+};
