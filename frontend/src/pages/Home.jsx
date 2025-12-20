@@ -1,15 +1,38 @@
-import AddContactButton from "../components/AddContactButton";
-import ContactList from "../components/ContactList";
-import ContactSearch from "../components/ContactSearch";
+import React from "react";
+import { useAuth } from "../context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
+import Navbar from "../layouts/Navbar.jsx";
+import { ThemeProvider } from "../context/ThemeContext.jsx";
+import { AuthProvider } from "../context/AuthContext.jsx";
 
-function Home() {
+const Home = () => {
+    const { logout } = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = async () => {
+        await logout();
+        navigate("/login");
+    };
+
     return (
-        <div className="w-full max-w-2xl mx-auto px-2">
-            <AddContactButton />
-            <ContactSearch />
-            <ContactList />
+        <div>
+            <div>
+                <AuthProvider>
+                    <ThemeProvider>
+                        <Navbar />
+                    </ThemeProvider>
+                </AuthProvider>
+            </div>
+
+            <div className="flex flex-col items-center justify-center min-h-screen">
+                <h1 className="text-3xl font-bold mb-4">Welcome to dashboard</h1>
+                <button onClick={handleLogout} className="bg-red-500 text-white px-4 py-2 rounded">
+                    Logout
+                </button>
+            </div>
         </div>
+
     );
-}
+};
 
 export default Home;
