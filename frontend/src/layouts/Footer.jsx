@@ -6,12 +6,9 @@ import { useTheme } from "../context/ThemeContext";
 const Footer = () => {
     const { theme } = useTheme();
     const navigate = useNavigate();
-    const location = useLocation(); // Track current route
+    const location = useLocation();
 
-    // Optional: track active item by route
-    const isActive = (path) => {
-        return location.pathname === path;
-    }
+    const isActive = (path) => location.pathname === path;
 
     const buttons = [
         { label: "Dial", icon: <FiPhone size={22} />, path: "/dial" },
@@ -21,34 +18,27 @@ const Footer = () => {
     ];
 
     return (
-        <div
-            className={`flex justify-around items-center p-4 w-full
-                ${theme === "light"
-                    ? "bg-gray-100 shadow-[0_-4px_10px_rgba(0,0,0,0.15)]"
-                    : "bg-gray-600"
-                }
-            `}
+        <div className={`flex justify-around items-center p-4 w-full
+            ${theme === "light"
+                ? "bg-gray-100 shadow-[0_-4px_10px_rgba(0,0,0,0.15)]"
+                : "bg-gray-600"
+            }`}
         >
-            
             {buttons.map((btn) => (
                 <div
                     key={btn.label}
                     onClick={() => navigate(btn.path)}
-                    className={`flex flex-col items-center sm:text-sm text-md cursor-pointer
-                        px-8 py-2 rounded-full transition-all duration-200 shadow-xl
+                    className={`flex flex-col items-center cursor-pointer px-8 py-2 rounded-full transition-all
                         ${isActive(btn.path)
                             ? "bg-green-300 text-black"
                             : theme === "dark"
-                                ? "text-gray-100 bg-gray-600  hover:bg-green-200 hover:text-black"
-                                : "text-gray-800 bg-gray-100  hover:bg-green-200"
-                        }
-                        
-                    `}
+                                ? "text-gray-100 bg-gray-600 hover:bg-green-200 hover:text-black"
+                                : "text-gray-800 bg-gray-100 hover:bg-green-200"
+                        }`}
                 >
                     {btn.icon}
                     <span className="font-semibold">{btn.label}</span>
                 </div>
-
             ))}
         </div>
     );
