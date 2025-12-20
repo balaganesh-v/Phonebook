@@ -10,7 +10,7 @@ export const registerNewUser = async (data, res) => {
 
     // ✅ Correct repository method name
     const existingUser = await userRepository.findByEmailOrPhone(email, phone);
-    if (existingUser){
+    if (existingUser) {
         throw new Error("User already exists");
     }
 
@@ -27,10 +27,12 @@ export const registerNewUser = async (data, res) => {
 
     res.cookie("token", token, {
         httpOnly: true,
-        sameSite: "Strict",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: "None", // allows cross-origin localhost requests
+        secure: false,    // must be false for HTTP localhost
         maxAge: 7 * 24 * 60 * 60 * 1000
     });
+
+
 
     return { user, token };
 };
@@ -40,12 +42,12 @@ export const loginUser = async (data, res) => {
 
     // ✅ Login only by phone
     const user = await userRepository.findByPhone(phone);
-    if (!user){
+    if (!user) {
         throw new Error("Invalid phone number");
     }
 
     const isMatch = await comparePassword(password, user.password);
-    if (!isMatch){
+    if (!isMatch) {
         throw new Error("Invalid password");
     }
 
@@ -53,10 +55,12 @@ export const loginUser = async (data, res) => {
 
     res.cookie("token", token, {
         httpOnly: true,
-        sameSite: "Strict",
-        secure: process.env.NODE_ENV === "production",
+        sameSite: "None", // allows cross-origin localhost requests
+        secure: false,    // must be false for HTTP localhost
         maxAge: 7 * 24 * 60 * 60 * 1000
     });
+
+
 
     return { user, token };
 };
