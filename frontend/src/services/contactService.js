@@ -1,14 +1,18 @@
 import axios from "axios";
 
-// Use your deployed backend URL
-const API_URL = "http://localhost:5000/contacts";
+const api = axios.create({
+    baseURL: "http://localhost:5000/contacts",
+    withCredentials: true, // backend handles auth via cookies
+    headers: { "Content-Type": "application/json" },
+});
 
 // CREATE
 export const createContact = async (data) => {
-    try {
-        const response = await axios.post(API_URL, data);
-        return response.data;
-    } catch (error) {
+    try{
+        const res = await api.post("/", data);
+        return res.data;
+    }
+    catch (error) {
         console.error("Error creating contact:", error);
         throw error;
     }
@@ -16,44 +20,45 @@ export const createContact = async (data) => {
 
 // READ ALL
 export const getContacts = async () => {
-    try {
-        const response = await axios.get(API_URL);
-        return response.data;
-    } catch (error) {
+    try{
+        const res = await api.get("/");
+        return res.data;
+    }catch(error){
         console.error("Error fetching contacts:", error);
         throw error;
     }
+
 };
 
 // READ ONE
 export const getContactById = async (id) => {
-    try {
-        const response = await axios.get(`${API_URL}/${id}`);
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching contact:", error);
+    try{
+        const res = await api.get(`/${id}`);
+        return res.data;
+    }catch(error){
+        console.error("Error fetching contact by ID :", error);
         throw error;
     }
 };
 
 // UPDATE
 export const updateContactById = async (id, data) => {
-    try {
-        const response = await axios.put(`${API_URL}/${id}`, data);
-        return response.data;
-    } catch (error) {
-        console.error("Error updating contact:", error);
+    try{
+        const res = await api.put(`/${id}`, data);
+        return res.data;
+    }catch(error){
+        console.error("Error updating contact by ID :", error);
         throw error;
     }
 };
 
 // DELETE
 export const deleteContactById = async (id) => {
-    try {
-        const response = await axios.delete(`${API_URL}/${id}`);
-        return response.data;
-    } catch (error) {
-        console.error("Error deleting contact:", error);
+    try{
+        const res = await api.delete(`/${id}`);
+        return res.data;
+    }catch(error){
+        console.error("Error deleting contact by ID :", error);
         throw error;
     }
 };

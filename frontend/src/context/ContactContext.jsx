@@ -1,4 +1,4 @@
-import { createContext, useState, useMemo, useContext } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import {
     createContact,
     getContacts,
@@ -6,72 +6,93 @@ import {
     deleteContactById,
 } from "../services/contactService";
 
-export const ContactContext = createContext();
+export const ContactContext = createContext(null);
 
 export const ContactProvider = ({ children }) => {
     const [contacts, setContacts] = useState([]);
     const [editingContact, setEditingContact] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const initializeContacts = async () => {
         try {
+            setLoading(true);
+            setError(null);
             const data = await getContacts();
-            setContacts(data);
-        } catch (error) {
-            console.error("Error initializing contacts:", error);
+            console.log(data)
+            setContacts(data || []);
+        } catch (err) {
+            console.error("Error fetching contacts:", err);
+            setError("Failed to load contacts");
+        } finally {
+            setLoading(false);
         }
     };
 
+    useEffect(() => {
+        initializeContacts();
+    }, []);
+
     const addContact = async (data) => {
         try {
+            setLoading(true);
+            setError(null);
             await createContact(data);
-            initializeContacts();
-        } catch (error) {
-            console.error("Error adding contact:", error);
+            await initializeContacts();
+        } catch (err) {
+            console.error("Error creating contact:", err);
+            setError("Failed to create contact");
+        } finally {
+            setLoading(false);
         }
     };
 
     const updateContact = async (id, data) => {
         try {
+            setLoading(true);
+            setError(null);
             await updateContactById(id, data);
             setEditingContact(null);
-            initializeContacts();
-        } catch (error) {
-            console.error("Error updating contact:", error);
+            await initializeContacts();
+        } catch (err) {
+            console.error("Error updating contact:", err);
+            setError("Failed to update contact");
+        } finally {
+            setLoading(false);
         }
     };
 
     const deleteContact = async (id) => {
         try {
+            setLoading(true);
+            setError(null);
             await deleteContactById(id);
-            initializeContacts();
-        } catch (error) {
-            console.error("Error deleting contact:", error);
+            await initializeContacts();
+        } catch (err) {
+            console.error("Error deleting contact:", err);
+            setError("Failed to delete contact");
+        } finally {
+            setLoading(false);
         }
     };
 
-    const filteredContacts = useMemo(() => {
-        if (!searchQuery) return contacts;
-        return contacts.filter(contact =>
-            contact.name.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    }, [contacts, searchQuery]);
+    const value = {
+        contacts,
+        searchQuery,
+        setSearchQuery,
+        addContact,
+        updateContact,
+        deleteContact,
+        editingContact,
+        setEditingContact,
+        initializeContacts,
+        loading,
+        error,
+    };
 
     return (
-        <ContactContext.Provider
-            value={{
-                contacts,
-                filteredContacts,
-                searchQuery,
-                setSearchQuery,
-                addContact,
-                updateContact,
-                deleteContact,
-                editingContact,
-                setEditingContact,
-                initializeContacts,
-            }}
-        >
+        <ContactContext.Provider value={value}>
             {children}
         </ContactContext.Provider>
     );
