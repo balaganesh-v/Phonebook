@@ -33,18 +33,7 @@ export const getUserContactById = (id, user) =>
     contactRepo.getContactById(id, user.id);
 
 export const updateUserContact = async (id, data, user) => {
-    // Optional: prevent updating to a duplicate phone
-    if (data.phone) {
-        const duplicate = await contactRepo.findByPhoneAndUser(
-            data.phone,
-            user.id
-        );
-
-        if (duplicate && duplicate._id.toString() !== id) {
-            throw new Error("This phone number already exists in your contacts");
-        }
-    }
-
+    // Update without checking for duplicate if it's the same contact
     return contactRepo.updateContactById(id, user.id, data);
 };
 
