@@ -31,7 +31,7 @@ export const logout = async (req, res, next) => {
     try {
         res.clearCookie("token", {
             httpOnly: true,
-            sameSite: "None", // allows cross-origin localhost requests
+            sameSite: "Lax", // allows cross-origin localhost requests
             secure: false,    // must be false for HTTP localhost
         });
 
