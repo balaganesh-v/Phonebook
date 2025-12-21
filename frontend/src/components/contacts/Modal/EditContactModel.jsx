@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useContacts } from "../../../context/ContactContext";
 
-const AddContactModal = ({ open, onClose }) => {
-    const { addContact, loading } = useContacts();
+const EditContactModal = () => {
+    const { editingContact, setEditingContact, updateContact } = useContacts();
 
     const [formData, setFormData] = useState({
         name: "",
@@ -15,36 +15,39 @@ const AddContactModal = ({ open, onClose }) => {
         notes: "",
     });
 
-    if (!open){
-        return null;
-    }
+    useEffect(() => {
+        if (editingContact) {
+            setFormData({
+                name: editingContact.name || "",
+                phone: editingContact.phone || "",
+                email: editingContact.email || "",
+                address: editingContact.address || "",
+                company: editingContact.company || "",
+                jobTitle: editingContact.jobTitle || "",
+                birthday: editingContact.birthday?.slice(0, 10) || "",
+                notes: editingContact.notes || "",
+            });
+        }
+    }, [editingContact]);
 
-    const handleChange = (event) => {
-        const { name, value } = event.target;
+    if (!editingContact) return null;
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        await addContact(formData);
-        setFormData({
-            name: "",
-            phone: "",
-            email: "",
-            address: "",
-            company: "",
-            jobTitle: "",
-            birthday: "",
-            notes: "",
-        });
-        onClose();
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const id = editingContact._id || editingContact.id;
+        await updateContact(id, formData);
     };
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-2xl relative animate-scaleUp">
                 <h2 className="text-2xl font-bold mb-6 text-gray-800">
-                    Add New Contact
+                    Edit Contact
                 </h2>
 
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -53,7 +56,6 @@ const AddContactModal = ({ open, onClose }) => {
                         value={formData.name}
                         onChange={handleChange}
                         placeholder="Full Name"
-                        required
                         className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
                     <input
@@ -61,7 +63,6 @@ const AddContactModal = ({ open, onClose }) => {
                         value={formData.phone}
                         onChange={handleChange}
                         placeholder="Phone Number"
-                        required
                         className="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                     />
                     <input
@@ -112,7 +113,7 @@ const AddContactModal = ({ open, onClose }) => {
                     <div className="col-span-1 md:col-span-2 flex justify-end gap-3 mt-4">
                         <button
                             type="button"
-                            onClick={onClose}
+                            onClick={() => setEditingContact(null)}
                             className="px-5 py-2 rounded-lg border border-gray-300 hover:bg-gray-100 transition"
                         >
                             Cancel
@@ -120,17 +121,16 @@ const AddContactModal = ({ open, onClose }) => {
 
                         <button
                             type="submit"
-                            disabled={loading}
-                            className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-5 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
                         >
-                            {loading ? "Saving..." : "Save Contact"}
+                            Save Changes
                         </button>
                     </div>
                 </form>
 
                 {/* Close Button */}
                 <button
-                    onClick={onClose}
+                    onClick={() => setEditingContact(null)}
                     className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none"
@@ -143,4 +143,4 @@ const AddContactModal = ({ open, onClose }) => {
     );
 };
 
-export default AddContactModal;
+export default EditContactModal;

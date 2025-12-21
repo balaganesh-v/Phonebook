@@ -32,14 +32,7 @@ function App() {
                             <Route path="/register" element={<RegisterForm />} />
 
                             {/* Protected */}
-                            <Route
-                                path="/"
-                                element={
-                                    <PrivateRoute>
-                                        <Home />
-                                    </PrivateRoute>
-                                }
-                            >
+                            <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>}>
                                 <Route
                                     index
                                     element={

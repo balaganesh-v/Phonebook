@@ -1,19 +1,30 @@
-import React from "react";
-import { FiUsers } from "react-icons/fi";
-import ContactList from "../components/contacts/ContactList/ContactList.jsx";
+import { useState } from "react";
+import ContactList from "../components/contacts/ContactList/ContactList";
+import AddContactModal from "../components/contacts/Modal/addContactModal";
 
 const Contacts = () => {
+    const [openAdd, setOpenAdd] = useState(false);
+
     return (
-        <div className="p-4 bg-gray-100">
-            <h1 className="flex items-center gap-2 font-semibold ml-1 mb-4 text-xl">
-                <FiUsers size={22} />
-                <span className="sm:text-lg">Contacts</span>
-            </h1>
+        <>
+            <div className="flex justify-between items-center">
+                <h1 className="text-2xl font-semibold">Contacts</h1>
+                <button
+                    onClick={() => setOpenAdd(true)}
+                    className="bg-blue-600 text-white rounded-xl px-4 py-2 rounded"
+                >
+                    + Add Contact
+                </button>
+            </div>
 
             <ContactList />
-        </div>
+
+            <AddContactModal
+                open={openAdd}
+                onClose={() => setOpenAdd(false)}
+            />
+        </>
     );
 };
 
 export default Contacts;
-
