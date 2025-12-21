@@ -14,16 +14,11 @@ import Contacts from "./pages/Contacts";
 import Messages from "./pages/Messages";
 import Favourites from "./pages/Favourites";
 
-import EditContactModal from "./components/contacts/Modal/EditContactModel.jsx";
 
 function App() {
     return (
         <AuthProvider>
             <ContactProvider>
-
-                {/* GLOBAL CONTACT MODAL */}
-                <EditContactModal />
-
                 <ThemeProvider>
                     <BrowserRouter>
                         <Routes>
@@ -33,11 +28,10 @@ function App() {
 
                             {/* Protected */}
                             <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>}>
-                                <Route
-                                    index
+                                <Route index
                                     element={
-                                        <h1 className="text-center text-3xl">
-                                            Welcome to dashboard
+                                        <h1 className="flex text-center justify-center text-3xl font-bold mt-20">
+                                            Welcome to dashboard❤️!!
                                         </h1>
                                     }
                                 />

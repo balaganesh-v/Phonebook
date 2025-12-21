@@ -1,27 +1,44 @@
 import { useState } from "react";
 import ContactList from "../components/contacts/ContactList/ContactList";
-import AddContactModal from "../components/contacts/Modal/addContactModal";
+import AddContactModal from "../components/contacts/Modal/AddContactModal";
+import EditContactModal from "../components/contacts/Modal/EditContactModal";
+import { useContacts } from "../context/ContactContext";
 
 const Contacts = () => {
-    const [openAdd, setOpenAdd] = useState(false);
+    const [openAddContact, setOpenAddContact] = useState(false);
+    const [openEditContact, setOpenEditContact] = useState(false);
+
+    const { setEditingContact } = useContacts();
+
+    const handleEdit = (contact) => {
+        setEditingContact(contact);
+        setOpenEditContact(true);
+    };
+
+    const handleCloseEdit = () => {
+        setEditingContact(null);
+        setOpenEditContact(false);
+    };
 
     return (
         <>
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-semibold">Contacts</h1>
-                <button
-                    onClick={() => setOpenAdd(true)}
-                    className="bg-blue-600 text-white rounded-xl px-4 py-2 rounded"
-                >
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-semibold px-4">Contacts</h1>
+                <button onClick={() => setOpenAddContact(true) } className="bg-blue-600 text-white px-4 py-2 rounded-xl">
                     + Add Contact
                 </button>
             </div>
 
-            <ContactList />
+            <ContactList onEdit={handleEdit} />
 
             <AddContactModal
-                open={openAdd}
-                onClose={() => setOpenAdd(false)}
+                open={openAddContact}
+                onClose={() => setOpenAddContact(false)}
+            />
+
+            <EditContactModal
+                open={openEditContact}
+                onClose={handleCloseEdit}
             />
         </>
     );

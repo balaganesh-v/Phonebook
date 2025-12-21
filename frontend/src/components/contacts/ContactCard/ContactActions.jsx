@@ -1,9 +1,10 @@
 import { FiPhone } from "react-icons/fi";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { useContacts } from "../../../context/ContactContext";
+import { useContacts } from "../../../context/ContactContext.jsx";
 
-const ContactActions = ({ contact }) => {
-    const { setEditingContact } = useContacts();
+const ContactActions = ({ contact, onEdit }) => {
+
+    const { deleteContact } = useContacts();
 
     const handlePhoneCall = () => {
         if (!contact.phone) return;
@@ -23,17 +24,17 @@ const ContactActions = ({ contact }) => {
 
             {/* Edit */}
             <button
-                onClick={() => setEditingContact(contact)}
+                onClick={() => onEdit(contact)}
                 className="px-3 py-1 text-orange-600 hover:bg-orange-100 rounded flex items-center gap-2"
             >
                 <FaEdit />
                 Edit Contact
             </button>
 
-            {/* Delete (Disabled – NO HANDLER) */}
+            {/* Delete */}
             <button
-                disabled
-                className="px-3 py-1 text-gray-400 cursor-not-allowed rounded flex items-center gap-2"
+                onClick={() => deleteContact(contact._id)}
+                className="px-3 py-1 text-red-600 hover:bg-red-100 rounded flex items-center gap-2"
             >
                 <FaTrash />
                 Delete Contact
