@@ -14,10 +14,16 @@ import Contacts from "./pages/Contacts";
 import Messages from "./pages/Messages";
 import Favourites from "./pages/Favourites";
 
+import EditContactModal from "./components/contacts/Modal/EditContactModel.jsx";
+
 function App() {
     return (
         <AuthProvider>
             <ContactProvider>
+
+                {/* GLOBAL CONTACT MODAL */}
+                <EditContactModal />
+
                 <ThemeProvider>
                     <BrowserRouter>
                         <Routes>
@@ -25,7 +31,7 @@ function App() {
                             <Route path="/login" element={<LoginForm />} />
                             <Route path="/register" element={<RegisterForm />} />
 
-                            {/* Protected layout */}
+                            {/* Protected */}
                             <Route
                                 path="/"
                                 element={
@@ -48,7 +54,6 @@ function App() {
                                 <Route path="favourites" element={<Favourites />} />
                             </Route>
 
-                            {/* Fallback */}
                             <Route path="*" element={<Navigate to="/" replace />} />
                         </Routes>
                     </BrowserRouter>

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import {
     createContact,
     getContacts,
@@ -20,7 +20,6 @@ export const ContactProvider = ({ children }) => {
             setLoading(true);
             setError(null);
             const data = await getContacts();
-            console.log(data)
             setContacts(data || []);
         } catch (err) {
             console.error("Error fetching contacts:", err);
@@ -37,11 +36,9 @@ export const ContactProvider = ({ children }) => {
     const addContact = async (data) => {
         try {
             setLoading(true);
-            setError(null);
             await createContact(data);
             await initializeContacts();
         } catch (err) {
-            console.error("Error creating contact:", err);
             setError("Failed to create contact");
         } finally {
             setLoading(false);
@@ -51,12 +48,10 @@ export const ContactProvider = ({ children }) => {
     const updateContact = async (id, data) => {
         try {
             setLoading(true);
-            setError(null);
             await updateContactById(id, data);
-            setEditingContact(null);
+            setEditingContact(null); // CLOSE MODAL
             await initializeContacts();
         } catch (err) {
-            console.error("Error updating contact:", err);
             setError("Failed to update contact");
         } finally {
             setLoading(false);
@@ -66,33 +61,30 @@ export const ContactProvider = ({ children }) => {
     const deleteContact = async (id) => {
         try {
             setLoading(true);
-            setError(null);
             await deleteContactById(id);
             await initializeContacts();
         } catch (err) {
-            console.error("Error deleting contact:", err);
             setError("Failed to delete contact");
         } finally {
             setLoading(false);
         }
     };
 
-    const value = {
-        contacts,
-        searchQuery,
-        setSearchQuery,
-        addContact,
-        updateContact,
-        deleteContact,
-        editingContact,
-        setEditingContact,
-        initializeContacts,
-        loading,
-        error,
-    };
-
     return (
-        <ContactContext.Provider value={value}>
+        <ContactContext.Provider
+            value={{
+                contacts,
+                searchQuery,
+                setSearchQuery,
+                addContact,
+                updateContact,
+                deleteContact,
+                editingContact,
+                setEditingContact,
+                loading,
+                error,
+            }}
+        >
             {children}
         </ContactContext.Provider>
     );
@@ -101,7 +93,7 @@ export const ContactProvider = ({ children }) => {
 export const useContacts = () => {
     const context = useContext(ContactContext);
     if (!context) {
-        throw new Error("useContacts must be used within a ContactProvider");
+        throw new Error("useContacts must be used within ContactProvider");
     }
     return context;
 };
