@@ -1,5 +1,6 @@
 import { useTheme } from "../../../context/ThemeContext";
 import ContactInfo from "./ContactInfo";
+import ContactActions from "./ContactActions";
 
 const ContactCard = ({ contact }) => {
     const { theme } = useTheme();
@@ -17,7 +18,7 @@ const ContactCard = ({ contact }) => {
             <div className="flex items-center flex-1 min-w-0 gap-3">
                 <ContactInfo name={contact.name} phone={contact.phone} />
             </div>
-
+            <ContactActions contact={contact} />
     
         </div>
     );
