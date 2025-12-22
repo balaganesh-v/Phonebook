@@ -9,6 +9,12 @@ import {
 const callSocketHandler = (io) => {
     io.on("connection", (socket) => {
 
+        // ✅ Log successful socket connection
+        console.log("Socket connected:", {
+            socketId: socket.id,
+            user: socket.user   // comes from io.use authentication middleware
+        });
+        
         // Register logged-in user
         socket.on("register", (userId) => {
             registerUser(socket, userId);

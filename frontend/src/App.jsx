@@ -14,7 +14,6 @@ import Contacts from "./pages/Contacts";
 import Messages from "./pages/Messages";
 import Favourites from "./pages/Favourites";
 
-
 function App() {
     return (
         <AuthProvider>
@@ -27,11 +26,19 @@ function App() {
                             <Route path="/register" element={<RegisterForm />} />
 
                             {/* Protected */}
-                            <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>}>
-                                <Route index
+                            <Route
+                                path="/"
+                                element={
+                                    <PrivateRoute>
+                                        <Home />
+                                    </PrivateRoute>
+                                }
+                            >
+                                <Route
+                                    index
                                     element={
-                                        <h1 className="flex text-center justify-center text-3xl font-bold mt-20">
-                                            Welcome to dashboard❤️!!
+                                        <h1 className="text-center text-3xl font-bold mt-20">
+                                            Welcome to dashboard!!
                                         </h1>
                                     }
                                 />

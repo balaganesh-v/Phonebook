@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { loginUser, registerUser, logoutUser, getCurrentUser } from "../services/authService";
+import { socket } from "../socket";
 
 const AuthContext = createContext(null);
 
@@ -11,7 +12,7 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const loadUser = async () => {
             try {
-                const data = await getCurrentUser(); // backend reads cookie
+                const data = await getCurrentUser();
                 setUser(data?.user || null);
             } catch {
                 setUser(null);
@@ -21,6 +22,26 @@ export const AuthProvider = ({ children }) => {
         };
         loadUser();
     }, []);
+
+    // 🔌 SOCKET CONNECTION CONTROL
+    useEffect(() => {
+        if (user) {
+            socket.connect();
+
+            socket.on("connect", () => {
+                console.log("Socket connected:", socket.user);
+            });
+
+            socket.on("connect_error", (err) => {
+                console.error("Socket error:", err.message);
+            });
+        }
+
+        return () => {
+            socket.off("connect");
+            socket.off("connect_error");
+        };
+    }, [user]);
 
     const login = async (phone, password) => {
         setError(null);
@@ -48,6 +69,7 @@ export const AuthProvider = ({ children }) => {
 
     const logout = async () => {
         await logoutUser();
+        socket.disconnect();
         setUser(null);
     };
 
