@@ -1,10 +1,21 @@
 import { FiPhone } from "react-icons/fi";
+import { FaPhone } from "react-icons/fa";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { useContacts } from "../../../context/ContactContext.jsx";
+import { useSocket } from "../../../context/SocketContext.jsx";
 
 const ContactActions = ({ contact, onEdit }) => {
 
+    const { socket, me } = useSocket();
+
     const { deleteContact } = useContacts();
+    
+    const handleYuhCall = () => {
+        socket.emit("call-user", {
+            from: me.user.id,     // caller userId
+            to: contact._id       // receiver userId
+        });
+    };
 
     const handlePhoneCall = () => {
         if (!contact.phone) return;
@@ -18,8 +29,16 @@ const ContactActions = ({ contact, onEdit }) => {
                 onClick={handlePhoneCall}
                 className="px-3 py-1 text-green-600 hover:bg-green-100 rounded flex items-center gap-2"
             >
-                <FiPhone />
+                <FaPhone />
                 Call
+            </button>
+
+            <button
+                onClick={handleYuhCall}
+                className="px-3 py-1 text-green-600 hover:bg-green-100 rounded flex items-center gap-2"
+            >
+                <FiPhone />
+                yuhnie❤️!!
             </button>
 
             {/* Edit */}

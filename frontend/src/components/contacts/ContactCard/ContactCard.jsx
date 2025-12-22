@@ -1,10 +1,15 @@
 import { useTheme } from "../../../context/ThemeContext";
+import { useSocket } from "../../../context/SocketContext";
 import ContactInfo from "./ContactInfo";
 import ContactActions from "./ContactActions";
 import ContactAvatar from "./ContactAvatar";
 
 const ContactCard = ({ contact, onEdit }) => {
     const { theme } = useTheme();
+    const { onlineUsers } = useSocket(); // ✅ get online users
+
+    // ✅ check if this contact is online
+    const isOnline = onlineUsers.includes(contact._id);
 
     return (
         <div
@@ -17,9 +22,17 @@ const ContactCard = ({ contact, onEdit }) => {
                         : "bg-gray-200 text-gray-900 hover:bg-gray-300"
                 }`}
         >
-            <ContactAvatar name={contact.name} />
+            {/* ✅ pass online status */}
+            <ContactAvatar
+                name={contact.name}
+                isOnline={isOnline}
+            />
+
             <div className="flex items-center flex-1 min-w-0 gap-3">
-                <ContactInfo name={contact.name} phone={contact.phone} />
+                <ContactInfo
+                    name={contact.name}
+                    phone={contact.phone}
+                />
             </div>
 
             <ContactActions

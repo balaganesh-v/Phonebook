@@ -1,63 +1,41 @@
-import * as callService from "../services/callService.js";
+const onlineUsers = new Map(); // userId -> socketId
 
-// Track online users
-export const onlineUsers = new Map();
+export const registerUser = (socket, userId, io) => {
+    onlineUsers.set(userId, socket.id);
+    socket.userId = userId;
 
-// Register connected user
-export const registerUser = (socket, userId) => {
-    if (!userId) throw new Error("User ID required");
-    onlineUsers.set(userId.toString(), socket.id);
+    // ✅ Notify all clients
+    io.emit("online-users", Array.from(onlineUsers.keys()));
 };
 
-// Start a call
-export const handleCallUser = async (io, data) => {
-    const { callerId, receiverId, callType, offerSDP } = data;
-
-    const call = await callService.startCall({ callerId, receiverId, callType });
-
-    const receiverSocket = onlineUsers.get(receiverId.toString());
-    if (receiverSocket) {
-        io.to(receiverSocket).emit("incoming-call", {
-            callId: call._id,
-            callerId,
-            callType,
-            offerSDP
-        });
-    }
-};
-
-// Answer call
-export const handleAnswerCall = async (io, data) => {
-    const { callId, callerId, answerSDP } = data;
-
-    await callService.answerCall(callId);
-
-    const callerSocket = onlineUsers.get(callerId.toString());
-    if (callerSocket) {
-        io.to(callerSocket).emit("call-accepted", { callId, answerSDP });
-    }
-};
-
-// End call
-export const handleEndCall = async (io, data) => {
-    const { callId, callerId, receiverId } = data;
-
-    await callService.endCall(callId);
-
-    [callerId, receiverId].forEach(id => {
-        const socketId = onlineUsers.get(id.toString());
-        if (socketId) {
-            io.to(socketId).emit("call-ended", { callId });
-        }
-    });
-};
-
-// Remove disconnected user
-export const removeUser = (socketId) => {
-    for (const [userId, sId] of onlineUsers.entries()) {
-        if (sId === socketId) {
+export const removeUser = (socketId, io) => {
+    for (const [userId, id] of onlineUsers.entries()) {
+        if (id === socketId) {
             onlineUsers.delete(userId);
             break;
         }
+    }
+
+    io.emit("online-users", Array.from(onlineUsers.keys()));
+};
+
+export const handleCallUser = (io, data) => {
+    const receiverSocketId = onlineUsers.get(data.to);
+    if (receiverSocketId) {
+        io.to(receiverSocketId).emit("incoming-call", data);
+    }
+};
+
+export const handleAnswerCall = (io, data) => {
+    const callerSocketId = onlineUsers.get(data.to);
+    if (callerSocketId) {
+        io.to(callerSocketId).emit("call-answered", data);
+    }
+};
+
+export const handleEndCall = (io, data) => {
+    const socketId = onlineUsers.get(data.to);
+    if (socketId) {
+        io.to(socketId).emit("call-ended");
     }
 };

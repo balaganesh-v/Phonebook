@@ -9,35 +9,36 @@ import {
 const callSocketHandler = (io) => {
     io.on("connection", (socket) => {
 
-        // ✅ Log successful socket connection
         console.log("Socket connected:", {
             socketId: socket.id,
-            user: socket.user   // comes from io.use authentication middleware
-        });
-        
-        // Register logged-in user
-        socket.on("register", (userId) => {
-            registerUser(socket, userId);
+            user: socket.user
         });
 
-        // Call a user
+        // ✅ Send self info to frontend
+        socket.emit("me", {
+            socketId: socket.id,
+            user: socket.user
+        });
+
+        // Register logged-in user
+        socket.on("register", (userId) => {
+            registerUser(socket, userId, io);
+        });
+
         socket.on("call-user", (data) => {
             handleCallUser(io, data);
         });
 
-        // Answer call
         socket.on("answer-call", (data) => {
             handleAnswerCall(io, data);
         });
 
-        // End call
         socket.on("end-call", (data) => {
             handleEndCall(io, data);
         });
 
-        // Disconnect
         socket.on("disconnect", () => {
-            removeUser(socket.id);
+            removeUser(socket.id, io);
         });
     });
 };
