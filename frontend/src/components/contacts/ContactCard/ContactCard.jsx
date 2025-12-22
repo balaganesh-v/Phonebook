@@ -1,6 +1,7 @@
 import { useTheme } from "../../../context/ThemeContext";
 import ContactInfo from "./ContactInfo";
 import ContactActions from "./ContactActions";
+import ContactAvatar from "./ContactAvatar";
 
 const ContactCard = ({ contact, onEdit }) => {
     const { theme } = useTheme();
@@ -16,6 +17,7 @@ const ContactCard = ({ contact, onEdit }) => {
                         : "bg-gray-200 text-gray-900 hover:bg-gray-300"
                 }`}
         >
+            <ContactAvatar name={contact.name} />
             <div className="flex items-center flex-1 min-w-0 gap-3">
                 <ContactInfo name={contact.name} phone={contact.phone} />
             </div>
