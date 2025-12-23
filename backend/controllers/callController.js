@@ -1,23 +1,3 @@
-const onlineUsers = new Map(); // userId -> socketId
-
-export const registerUser = (socket, userId, io) => {
-    onlineUsers.set(userId, socket.id);
-    socket.userId = userId;
-
-    // ✅ Notify all clients
-    io.emit("online-users", Array.from(onlineUsers.keys()));
-};
-
-export const removeUser = (socketId, io) => {
-    for (const [userId, id] of onlineUsers.entries()) {
-        if (id === socketId) {
-            onlineUsers.delete(userId);
-            break;
-        }
-    }
-
-    io.emit("online-users", Array.from(onlineUsers.keys()));
-};
 
 export const handleCallUser = (io, data) => {
     const receiverSocketId = onlineUsers.get(data.to);
