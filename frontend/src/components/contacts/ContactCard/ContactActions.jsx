@@ -1,19 +1,17 @@
 import { FiPhone } from "react-icons/fi";
-import { FaPhone } from "react-icons/fa";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaPhone, FaEdit, FaTrash, FaComments } from "react-icons/fa"; // added FaComments
 import { useContacts } from "../../../context/ContactContext.jsx";
 import { useSocket } from "../../../context/SocketContext.jsx";
 
 const ContactActions = ({ contact, onEdit }) => {
 
     const { socket, me } = useSocket();
-
     const { deleteContact } = useContacts();
-    
+
     const handleYuhCall = () => {
         socket.emit("call-user", {
-            from: me.user.id,     // caller userId
-            to: contact._id       // receiver userId
+            from: me.user.id,     
+            to: contact._id       
         });
     };
 
@@ -22,9 +20,17 @@ const ContactActions = ({ contact, onEdit }) => {
         window.location.href = `tel:${contact.phone}`;
     };
 
+    const handleYuhChat = () => {
+        // You can emit a socket event or navigate to the chat page
+        socket.emit("start-chat", {
+            from: me.user.id,
+            to: contact._id
+        });
+    };
+
     return (
         <div className="flex gap-3">
-            {/* Call */}
+            {/* Phone Call */}
             <button
                 onClick={handlePhoneCall}
                 className="px-3 py-1 text-green-600 hover:bg-green-100 rounded flex items-center gap-2"
@@ -33,12 +39,22 @@ const ContactActions = ({ contact, onEdit }) => {
                 Call
             </button>
 
+            {/* Yuhnie Call */}
             <button
                 onClick={handleYuhCall}
                 className="px-3 py-1 text-green-600 hover:bg-green-100 rounded flex items-center gap-2"
             >
                 <FiPhone />
-                yuhnie❤️!!
+                yuh❤️!!
+            </button>
+
+            {/* Yuhnie Chat */}
+            <button
+                onClick={handleYuhChat}
+                className="px-3 py-1 text-blue-600 hover:bg-blue-100 rounded flex items-center gap-2"
+            >
+                <FaComments />
+                yuh❤️!!
             </button>
 
             {/* Edit */}
