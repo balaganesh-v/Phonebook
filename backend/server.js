@@ -21,12 +21,14 @@ const io = new Server(server, {
 io.use((socket, next) => {
     try {
         const rawCookie = socket.request.headers.cookie;
-        if (!rawCookie) throw new Error("No cookies");
-
+        if (!rawCookie){
+            throw new Error("No Cookies found in the headers");
+        }
         const cookies = cookie.parse(rawCookie);
         const token = cookies.token;
-        if (!token) throw new Error("Unauthorized");
-
+        if (!token){
+            throw new Error("Unauthorized Access: No token provided");
+        }
         socket.user = decodedToken(token);
         next();
     } catch (err) {
