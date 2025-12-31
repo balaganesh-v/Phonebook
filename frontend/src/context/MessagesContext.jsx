@@ -1,47 +1,86 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useSocket } from "./SocketContext";
-import messageService from "../services/messageService";
+import { useAuth } from "./AuthContext";
+import {
+    getConversations,
+    getMessages,
+    startConversation
+} from "../services/messageService";
 
 const MessagesContext = createContext();
 
 export const MessagesProvider = ({ children }) => {
-    const { socket } = useSocket();
+    const { socket, joinConversation, sendSocketMessage } = useSocket();
+    const { user } = useAuth();
 
     const [conversations, setConversations] = useState([]);
     const [activeConversation, setActiveConversation] = useState(null);
     const [messages, setMessages] = useState([]);
 
-    // Load conversation list
+    /* Load conversations */
     useEffect(() => {
-        messageService.getConversations().then(setConversations);
+        getConversations().then(setConversations);
     }, []);
 
-    // Load messages + join socket room
+    /* Load messages + join socket room */
     useEffect(() => {
-        if (!activeConversation) return;
+        if (!activeConversation) {
+            setMessages([]);
+            return;
+        }
 
-        socket.emit("join-conversation", activeConversation._id);
-
-        messageService
-            .getMessages(activeConversation._id)
-            .then(setMessages);
+        joinConversation(activeConversation._id);
+        getMessages(activeConversation._id).then(setMessages);
     }, [activeConversation]);
 
-    // Socket listeners
+    /* Listen for new messages */
     useEffect(() => {
-        socket.on("new-message", msg => {
+        if (!socket) return;
+
+        const handleNewMessage = (msg) => {
             setMessages(prev => [...prev, msg]);
-        });
+        };
 
-        return () => socket.off("new-message");
-    }, []);
+        socket.on("new-message", handleNewMessage);
+        return () => socket.off("new-message", handleNewMessage);
+    }, [socket]);
 
+    /* Open chat with contact */
+    const openChatWithContact = async (contact) => {
+        const existing = conversations.find(conv =>
+            conv.participants.some(p => p._id === contact._id)
+        );
+
+        if (existing) {
+            setActiveConversation(existing);
+            return;
+        }
+
+        const newConversation = await startConversation(contact._id);
+        setConversations(prev => [newConversation, ...prev]);
+        setActiveConversation(newConversation);
+    };
+
+    /* SEND MESSAGE (🔥 FIXED) */
     const sendMessage = (text) => {
-        socket.emit("send-message", {
+        if (!text.trim() || !activeConversation) return;
+
+        const receiverId = activeConversation.participants.find(
+            p => p._id !== user._id
+        )?._id;
+
+        if (!receiverId) {
+            console.error("Receiver not found");
+            return;
+        }
+
+        sendSocketMessage({
             conversationId: activeConversation._id,
-            text,
+            receiverId,
+            content: text
         });
     };
+
 
     return (
         <MessagesContext.Provider
@@ -51,6 +90,7 @@ export const MessagesProvider = ({ children }) => {
                 setActiveConversation,
                 messages,
                 sendMessage,
+                openChatWithContact
             }}
         >
             {children}
