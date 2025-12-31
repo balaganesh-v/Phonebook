@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ContactProvider } from "./context/ContactContext.jsx";
 import { SocketProvider } from "./context/SocketContext.jsx";
+import { MessagesProvider } from "./context/MessagesContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 
 import LoginForm from "./components/Auth/LoginForm";
@@ -17,9 +18,9 @@ import Favourites from "./pages/Favourites";
 
 function App() {
     return (
-        <AuthProvider>
-            <ContactProvider>
-                <SocketProvider>
+        <ContactProvider>
+            <SocketProvider>
+                <MessagesProvider>
                     <ThemeProvider>
                         <BrowserRouter>
                             <Routes>
@@ -54,9 +55,9 @@ function App() {
                             </Routes>
                         </BrowserRouter>
                     </ThemeProvider>
-                </SocketProvider>
-            </ContactProvider>
-        </AuthProvider>
+                </MessagesProvider>
+            </SocketProvider>
+        </ContactProvider>
     );
 }
 

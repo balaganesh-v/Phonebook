@@ -10,7 +10,7 @@ const Home = () => {
     return (
         <AuthProvider>
             <ThemeProvider>
-                <div className="min-h-screen flex flex-col">
+                <div className="h-screen flex flex-col">
                     <Navbar />
 
                     {/* CENTER CONTENT CHANGES HERE */}
