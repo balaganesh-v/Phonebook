@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { socket } from  "../socket.js"
+import { socket } from "../socket.js";
 
 const SocketContext = createContext(null);
 
@@ -10,17 +10,9 @@ export const SocketProvider = ({ userId, children }) => {
     useEffect(() => {
         if (!userId) return;
 
-        // Receive self info
-        socket.on("me", (data) => {
-            setMe(data);
-        });
+        socket.on("me", (data) => setMe(data));
+        socket.on("online-users", (users) => setOnlineUsers(users));
 
-        // Receive online users list
-        socket.on("online-users", (users) => {
-            setOnlineUsers(users);
-        });
-
-        // Register user
         socket.emit("register", userId);
 
         return () => {
@@ -29,17 +21,29 @@ export const SocketProvider = ({ userId, children }) => {
         };
     }, [userId]);
 
+    const joinConversation = (conversationId) => {
+        if (!conversationId) return;
+        socket.emit("join-conversation", conversationId);
+    };
+
+    const sendSocketMessage = ({ conversationId, receiverId, content }) => {
+        if (!content?.trim()) return;
+
+        socket.emit("send-message", {
+            conversationId,
+            receiverId,
+            content
+        });
+    };
+
+
     return (
-        <SocketContext.Provider value={{ socket, me, onlineUsers }}>
+        <SocketContext.Provider
+            value={{ socket, me, onlineUsers, joinConversation, sendSocketMessage }}
+        >
             {children}
         </SocketContext.Provider>
     );
 };
 
-export const useSocket = () => {
-    const context = useContext(SocketContext);
-    if (!context) {
-        throw new Error("useSocket must be used inside SocketProvider");
-    }
-    return context;
-};
+export const useSocket = () => useContext(SocketContext);
