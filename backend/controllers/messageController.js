@@ -1,67 +1,86 @@
 import {
-    getUserConversationsService,
-    getMessagesService,
-    startConversationService,
-    sendMessageService,
-    markSeenService
+    fetchConversations,
+    fetchMessages,
+    startsConversation,
+    sendMessage,
+    markMessageSeen
 } from "../services/messageService.js";
 
-import Conversation from "../models/Conversation.js";
-
-/* REST APIs */
-
+// API Handlers
 export const getConversations = async (req, res) => {
-    const conversations = await getUserConversationsService(req.user.id);
-    res.json(conversations);
+    try {
+        const conversations = await fetchConversations(req.user);
+        res.json(conversations);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };
 
 export const getMessages = async (req, res) => {
-    const messages = await getMessagesService(req.params.conversationId);
-    res.json(messages);
+    try {
+        const { conversationId } = req.params;
+        const messages = await fetchMessages(conversationId);
+        res.json(messages);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
 };
 
-export const startConversation = async (req, res) => {
-    const conversation = await startConversationService(
-        req.user.id,
-        req.body.receiverId
-    );
-    res.json(conversation);
+export const userStartsConversation = async (req, res) => {
+    try {
+        const senderId = req.user._id || req.user.id
+        const { receiverId } = req.body;
+        console.log("Sender ID:", senderId)
+        console.log("Receiver ID:", receiverId)
+        if (!receiverId) {
+            return res.status(400).json({ message: "Receiver ID is required" });
+        }
+        
+        
+        const conversation = await startsConversation(
+            senderId,   // sender (logged-in user)
+            receiverId      // receiver
+        );
+
+        res.json(conversation);
+    } catch (err) {
+        console.error("Start conversation error:", err);
+        res.status(500).json({ message: err.message });
+    }
 };
 
-/* SOCKET HANDLERS */
 
+// Socket Handlers
 export const handleSendMessage = async (io, socket, data) => {
-    const senderId = socket.user.id;
-    const { conversationId, content } = data;
+    try {
+        const senderId = socket.user._id;
+        const { conversationId, receiverId, content, messageType } = data;
 
-    const conversation = await Conversation.findById(conversationId);
-    if (!conversation) return;
+        if (!conversationId) {
+            throw new Error("ConversationId required");
+        }
 
-    const receiverId = conversation.participants.find(
-        id => id.toString() !== senderId
-    );
+        const message = await sendMessage({
+            conversationId,
+            sender: senderId,
+            receiver: receiverId,
+            content,
+            messageType
+        });
 
-    const message = await sendMessageService({
-        conversation: conversationId,
-        sender: senderId,
-        receiver: receiverId,
-        content
-    });
-
-    io.to(conversationId).emit("new-message", message);
+        io.to(conversationId.toString()).emit("new-message", message);
+    } catch (err) {
+        console.error("Socket send error:", err);
+    }
 };
 
 export const handleTyping = (socket, data) => {
-    socket.to(data.conversationId).emit("typing", {
-        userId: socket.user.id
-    });
+    const { conversationId, isTyping } = data;
+    socket.to(conversationId).emit("typing", { userId: socket.user._id, isTyping });
 };
 
 export const handleMessageSeen = async (io, socket, data) => {
-    const message = await markSeenService(data.messageId);
-
-    io.to(data.conversationId).emit("message-seen", {
-        messageId: message._id,
-        userId: socket.user.id
-    });
+    const { messageId, conversationId } = data;
+    const message = await markMessageSeen(messageId);
+    io.to(conversationId).emit("message-seen", message);
 };

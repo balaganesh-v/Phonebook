@@ -1,52 +1,89 @@
 import {
-    findUserConversations,
-    findConversationByUsers,
+    getUserConversations,
+    getMessagesByConversationId,
+    findConversationByParticipants,
     createConversation,
-    updateLastMessage
-} from "../repositories/conversationRepository.js";
-import {
-    findMessagesByConversation,
     createMessage,
-    markMessageSeen
+    updateConversationById,
+    updateMessageStatus
 } from "../repositories/messageRepository.js";
+import User from "../models/User.js";
+import Contact from "../models/Contact.js";
 
-// Get all conversations for a user
-export const getUserConversationsService = (userId) => {
-    return findUserConversations(userId);
+
+// API Handlers
+export const fetchConversations = async (userId) => {
+    return getUserConversations(userId);
 };
 
-export const getMessagesService = (conversationId) => {
-    return findMessagesByConversation(conversationId);
+export const fetchMessages = async (conversationId) => {
+    return getMessagesByConversationId(conversationId);
 };
 
-export const startConversationService = async (senderId, receiverId) => {
-    let conversation = await findConversationByUsers(senderId, receiverId);
+export const startsConversation = async (senderId, receiverContactId) => {
 
-    if (!conversation) {
-        conversation = await createConversation([senderId, receiverId]);
+    // 1️⃣ Check existing conversation
+    let conversation = await findConversationByParticipants([
+        senderId,
+        receiverContactId
+    ]);
+    if (conversation) return conversation;
+
+    // 2️⃣ Get sender from USERS
+    const sender = await User.findById(senderId).select("_id name phone");
+    if (!sender) {
+        throw new Error("Sender not found");
     }
 
+    // 3️⃣ Get receiver from CONTACTS
+    const receiver = await Contact.findById(receiverContactId).select("_id name phone");
+    if (!receiver) {
+        throw new Error("Receiver contact not found");
+    }
+
+    // 4️⃣ Build participant snapshots
+    const participants = [
+        {
+            _id: sender._id,
+            name: sender.name,
+            phone: sender.phone
+        },
+        {
+            _id: receiver._id,
+            name: receiver.name,
+            phone: receiver.phone
+        }
+    ];
+
+    // 5️⃣ Create conversation
+    conversation = await createConversation(participants);
     return conversation;
 };
 
-export const sendMessageService = async ({
-    conversation,
+
+// Socket Handlers
+export const sendMessage = async ({
+    conversationId,
     sender,
     receiver,
-    content
+    content,
+    messageType = "text"
 }) => {
     const message = await createMessage({
-        conversation,
+        conversation: conversationId,
         sender,
         receiver,
-        content
+        content,
+        messageType
     });
 
-    await updateLastMessage(conversation, message._id);
+    await updateConversationById(conversationId, {
+        lastMessage: message._id
+    });
 
     return message;
 };
 
-export const markSeenService = (messageId) => {
-    return markMessageSeen(messageId);
+export const markMessageSeen = async (messageId) => {
+    return updateMessageStatus(messageId, "seen");
 };

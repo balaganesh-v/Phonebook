@@ -10,10 +10,24 @@ import messageSocketHandler from "./messageSocketHandler.js";
 const socketManager = (io) => {
     io.on("connection", (socket) => {
 
-        const userId = socket.user.id; // or socket.user.id
+        // Normalize user id (Mongoose docs have _id and id alias)
+        const userId = (socket.user && (socket.user._id || socket.user.id))?.toString();
+        if (!userId) {
+            console.warn("Socket connected without a valid user, disconnecting:", socket.id);
+            socket.disconnect(true);
+            return;
+        }
 
-        // ✅ Register user ONCE from decoded token
+        // Register user ONCE from verified token + DB lookup
         addOnlineUser(userId, socket.id);
+
+        // Backwards compatibility: handle client 'register' emits if any
+        socket.on("register", (id) => {
+            if (id) {
+                addOnlineUser(id.toString(), socket.id);
+                io.emit("online-users", getOnlineUsers());
+            }
+        });
 
         io.emit("online-users", getOnlineUsers());
 
