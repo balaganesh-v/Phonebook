@@ -5,7 +5,8 @@ import dotenv from "dotenv";
 
 import app from "./app.js";
 import connectDB from "./config/db.js";
-import { decodedToken } from "./utils/security.js";
+import { verifyToken } from "./utils/security.js";
+import User from "./models/User.js";
 import socketManager from "./sockets/mainSocketManager.js";
 
 dotenv.config();
@@ -18,7 +19,7 @@ const io = new Server(server, {
 });
 
 // Socket auth middleware
-io.use((socket, next) => {
+io.use(async (socket, next) => {
     try {
         const rawCookie = socket.request.headers.cookie;
         if (!rawCookie){
@@ -29,7 +30,15 @@ io.use((socket, next) => {
         if (!token){
             throw new Error("Unauthorized Access: No token provided");
         }
-        socket.user = decodedToken(token);
+
+        // Verify token and attach full user document to the socket
+        const decoded = verifyToken(token);
+        const user = await User.findById(decoded.id).select("-password");
+        if (!user) {
+            throw new Error("Unauthorized: User not found");
+        }
+
+        socket.user = user;
         next();
     } catch (err) {
         next(err);
