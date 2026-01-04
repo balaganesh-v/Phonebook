@@ -10,8 +10,8 @@ export const SocketProvider = ({ userId, children }) => {
     useEffect(() => {
         if (!userId) return;
 
-        socket.on("me", (data) => setMe(data));
-        socket.on("online-users", (users) => setOnlineUsers(users));
+        socket.on("me", setMe);
+        socket.on("online-users", setOnlineUsers);
 
         socket.emit("register", userId);
 
@@ -22,13 +22,12 @@ export const SocketProvider = ({ userId, children }) => {
     }, [userId]);
 
     const joinConversation = (conversationId) => {
-        if (!conversationId) return;
-        socket.emit("join-conversation", conversationId);
+        if (conversationId) {
+            socket.emit("join-conversation", conversationId);
+        }
     };
 
     const sendSocketMessage = ({ conversationId, receiverId, content }) => {
-        if (!content?.trim()) return;
-
         socket.emit("send-message", {
             conversationId,
             receiverId,
@@ -36,10 +35,27 @@ export const SocketProvider = ({ userId, children }) => {
         });
     };
 
+    /* 🔹 NEW */
+    const sendTypingStatus = ({ conversationId, isTyping }) => {
+        socket.emit("typing", { conversationId, isTyping });
+    };
+
+    /* 🔹 NEW */
+    const sendSeenStatus = ({ conversationId, messageId }) => {
+        socket.emit("message-seen", { conversationId, messageId });
+    };
 
     return (
         <SocketContext.Provider
-            value={{ socket, me, onlineUsers, joinConversation, sendSocketMessage }}
+            value={{
+                socket,
+                me,
+                onlineUsers,
+                joinConversation,
+                sendSocketMessage,
+                sendTypingStatus,
+                sendSeenStatus
+            }}
         >
             {children}
         </SocketContext.Provider>

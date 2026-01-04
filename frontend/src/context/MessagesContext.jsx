@@ -16,13 +16,12 @@ export const MessagesProvider = ({ children }) => {
     const [conversations, setConversations] = useState([]);
     const [activeConversation, setActiveConversation] = useState(null);
     const [messages, setMessages] = useState([]);
+    const [typingUser, setTypingUser] = useState(null);
 
-    /* Load conversations */
     useEffect(() => {
         getConversations().then(setConversations);
     }, []);
 
-    /* Load messages + join socket room */
     useEffect(() => {
         if (!activeConversation) {
             setMessages([]);
@@ -33,35 +32,37 @@ export const MessagesProvider = ({ children }) => {
         getMessages(activeConversation._id).then(setMessages);
     }, [activeConversation]);
 
-    /* Listen for new messages */
+    /* 🔹 NEW MESSAGE */
     useEffect(() => {
-        if (!socket) return;
-
-        const handleNewMessage = (msg) => {
+        socket.on("new-message", (msg) => {
             setMessages(prev => [...prev, msg]);
-        };
+        });
 
-        socket.on("new-message", handleNewMessage);
-        return () => socket.off("new-message", handleNewMessage);
+        return () => socket.off("new-message");
     }, [socket]);
 
-    /* Open chat with contact */
-    const openChatWithContact = async (contact) => {
-        const existing = conversations.find(conv =>
-            conv.participants.some(p => p._id === contact._id)
-        );
+    /* 🔹 TYPING */
+    useEffect(() => {
+        socket.on("typing", ({ userId, isTyping }) => {
+            setTypingUser(isTyping ? userId : null);
+        });
 
-        if (existing) {
-            setActiveConversation(existing);
-            return;
-        }
+        return () => socket.off("typing");
+    }, [socket]);
 
-        const newConversation = await startConversation(contact._id);
-        setConversations(prev => [newConversation, ...prev]);
-        setActiveConversation(newConversation);
-    };
+    /* 🔹 MESSAGE SEEN */
+    useEffect(() => {
+        socket.on("message-seen", (updatedMessage) => {
+            setMessages(prev =>
+                prev.map(msg =>
+                    msg._id === updatedMessage._id ? updatedMessage : msg
+                )
+            );
+        });
 
-    /* SEND MESSAGE (🔥 FIXED) */
+        return () => socket.off("message-seen");
+    }, [socket]);
+
     const sendMessage = (text) => {
         if (!text.trim() || !activeConversation) return;
 
@@ -69,18 +70,12 @@ export const MessagesProvider = ({ children }) => {
             p => p._id !== user._id
         )?._id;
 
-        if (!receiverId) {
-            console.error("Receiver not found");
-            return;
-        }
-
         sendSocketMessage({
             conversationId: activeConversation._id,
             receiverId,
             content: text
         });
     };
-
 
     return (
         <MessagesContext.Provider
@@ -90,7 +85,7 @@ export const MessagesProvider = ({ children }) => {
                 setActiveConversation,
                 messages,
                 sendMessage,
-                openChatWithContact
+                typingUser
             }}
         >
             {children}
