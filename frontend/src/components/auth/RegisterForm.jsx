@@ -17,33 +17,80 @@ const RegisterForm = () => {
             setLoading(true);
             await register(form.name, form.email, form.phone, form.password);
             setForm({ name: "", email: "", phone: "", password: "" });
-            navigate("/"); // redirect to dashboard
+            navigate("/");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="max-w-md mx-auto mt-10 p-6 border rounded bg-white shadow">
-            <h1 className="text-2xl font-bold mb-4">Register</h1>
-            {error && <p className="text-red-500 mb-3">{error}</p>}
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+            <div className="w-full max-w-lg bg-white p-8 rounded-xl shadow-md">
+                <h1 className="text-3xl font-bold text-center mb-6">Register</h1>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                <input name="name" placeholder="Name" value={form.name} onChange={handleChange} required className="p-2 border rounded w-full" />
-                <input name="email" placeholder="Email" type="email" value={form.email} onChange={handleChange} required className="p-2 border rounded w-full" />
-                <input name="phone" placeholder="Phone" value={form.phone} onChange={handleChange} required className="p-2 border rounded w-full" />
-                <input name="password" placeholder="Password" type="password" value={form.password} onChange={handleChange} required className="p-2 border rounded w-full" />
-                <button disabled={loading} className="bg-blue-500 text-white py-2 rounded w-full hover:bg-blue-600 disabled:opacity-50">
-                    {loading ? "Registering..." : "Register"}
-                </button>
-            </form>
+                {error && (
+                    <p className="text-red-500 text-sm text-center mb-4">
+                        {error}
+                    </p>
+                )}
 
-            <p className="mt-4 text-sm text-center">
-                Already have an account?{" "}
-                <Link to="/login" className="text-blue-600 hover:underline font-medium">
-                    Login
-                </Link>
-            </p>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    <input
+                        name="name"
+                        placeholder="Name"
+                        value={form.name}
+                        onChange={handleChange}
+                        required
+                        className="p-3 w-full rounded-lg ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    <input
+                        name="email"
+                        type="email"
+                        placeholder="Email"
+                        value={form.email}
+                        onChange={handleChange}
+                        required
+                        className="p-3 w-full rounded-lg ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    <input
+                        name="phone"
+                        placeholder="Phone"
+                        value={form.phone}
+                        onChange={handleChange}
+                        required
+                        className="p-3 w-full rounded-lg ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    <input
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        value={form.password}
+                        onChange={handleChange}
+                        required
+                        className="p-3 w-full rounded-lg ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+
+                    <button
+                        disabled={loading}
+                        className="mt-2 bg-blue-500 text-white py-3 rounded-lg w-full font-medium hover:bg-blue-600 disabled:opacity-50 transition"
+                    >
+                        {loading ? "Registering..." : "Register"}
+                    </button>
+                </form>
+
+                <p className="mt-6 text-sm text-center">
+                    Already have an account?{" "}
+                    <Link
+                        to="/login"
+                        className="text-blue-600 hover:underline font-medium"
+                    >
+                        Login
+                    </Link>
+                </p>
+            </div>
         </div>
     );
 };
