@@ -1,17 +1,17 @@
 import { registerNewUser, loginUser } from "../services/userAuthService.js";
 
-//Authentication Details are implemented here
+const getCookieOptions = () => ({
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+});
+
 export const register = async (req, res, next) => {
     try {
         const result = await registerNewUser(req);
         if (result.token) {
-            // proxy ensures same-origin, so Lax is safe and works with HTTP
-            res.cookie("token", result.token, {
-                httpOnly: true,
-                sameSite: "Lax", // simple policy now that everything appears same-site
-                secure: false, // true in production (HTTPS)
-                maxAge: 7 * 24 * 60 * 60 * 1000
-            });
+            res.cookie("token", result.token, getCookieOptions());
         }
         return res.status(result.status).json(result.body);
     } catch (error) {
@@ -19,18 +19,11 @@ export const register = async (req, res, next) => {
     }
 };
 
-//LOGIN Details are implemented here
 export const login = async (req, res, next) => {
     try {
         const result = await loginUser(req);
         if (result.token) {
-            // also use Lax for register handler
-            res.cookie("token", result.token, {
-                httpOnly: true,
-                sameSite: "Lax",
-                secure: false, // true in production with HTTPS
-                maxAge: 7 * 24 * 60 * 60 * 1000
-            });
+            res.cookie("token", result.token, getCookieOptions());
         }
         return res.status(result.status).json(result.body);
     } catch (error) {
@@ -57,13 +50,7 @@ export const profile = async (req, res, next) => {
 
 export const logout = async (req, res, next) => {
     try {
-        // clear cookie using Lax as well (sameSite policy does not affect clearing)
-        res.clearCookie("token", {
-            httpOnly: true,
-            sameSite: "Lax",
-            secure: false,    // must be false for HTTP localhost
-        });
-
+        res.clearCookie("token", getCookieOptions());
         res.status(200).json({ message: "Logged out successfully" });
     } catch (error) {
         next(error);

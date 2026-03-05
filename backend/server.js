@@ -13,28 +13,29 @@ import dotenv from "dotenv";
 dotenv.config();
 await connectDB();
 
-// Using app instance to creates the Server for Express and Socket.IO
 const server = http.createServer(app);
 
-// Socket.IO setup with CORS configuration
 const io = new Server(server, {
-    cors: { origin: "http://localhost:5173", credentials: true }
+    cors: {
+        origin: process.env.FRONTEND_URL || "http://localhost:5173",
+        credentials: true,
+        methods: ["GET", "POST","PUT","DELETE"]
+    }
 });
 
 // Socket auth middleware
 io.use(async (socket, next) => {
     try {
         const rawCookie = socket.request.headers.cookie;
-        if (!rawCookie){
+        if (!rawCookie) {
             throw new Error("No Cookies found in the headers");
         }
         const cookies = cookie.parse(rawCookie);
         const token = cookies.token;
-        if (!token){
+        if (!token) {
             throw new Error("Unauthorized Access: No token provided");
         }
 
-        // Verify token and attach full user document to the socket
         const decoded = verifyToken(token);
         const user = await Users.findById(decoded.id).select("-password");
         if (!user) {
@@ -48,7 +49,6 @@ io.use(async (socket, next) => {
     }
 });
 
-// SINGLE socket connection
 socketManager(io);
 
 const PORT = process.env.PORT || 5001;
