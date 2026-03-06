@@ -13,7 +13,7 @@ export const SocketProvider = ({ children }) => {
     useEffect(() => {
         if (isAuthenticated && user?.id) {
             connectSocket();
-            
+
             socket.on("me", setMe);
             socket.on("online-users", setOnlineUsers);
 
@@ -69,4 +69,10 @@ export const SocketProvider = ({ children }) => {
     );
 };
 
-export const useSocket = () => useContext(SocketContext);
+export const useSocket = () => {
+    const context = useContext(SocketContext);
+    if (!context) {
+        return { socket: null, me: null, onlineUsers: [], joinConversation: null, sendSocketMessage: null, sendTypingStatus: null, sendSeenStatus: null };
+    }
+    return context;
+};

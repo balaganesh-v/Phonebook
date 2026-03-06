@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:5001/contacts",
-    withCredentials: true, // backend handles auth via cookies
+    baseURL: `${import.meta.env.VITE_API_URL}/contacts`,
+    withCredentials: true,
     headers: { "Content-Type": "application/json" },
 });
 

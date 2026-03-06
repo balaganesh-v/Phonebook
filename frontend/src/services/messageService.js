@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:5001/messages",
+    baseURL: `${import.meta.env.VITE_API_URL}/messages`,
     withCredentials: true,
     headers: { "Content-Type": "application/json" },
 });

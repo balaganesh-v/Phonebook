@@ -1,9 +1,14 @@
 import axios from "axios";
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
+if (!BASE_URL) {
+    console.warn("⚠️ VITE_API_URL is not defined. Check your .env file.");
+}
+
 const api = axios.create({
-    // because of vite proxy we can use relative path and stay on same origin
-    baseURL: "http://localhost:5001/auth",
-    withCredentials: true, // still send cookies
+    baseURL: `${BASE_URL}/auth`,
+    withCredentials: true,
     headers: { "Content-Type": "application/json" },
 });
 

@@ -13,7 +13,7 @@ const ContactActions = ({ contact, onEdit }) => {
     const { openChatWithContact } = useMessages();
 
     // Safety check
-    if (!contact){
+    if (!contact) {
         return null;
     }
 
@@ -37,12 +37,18 @@ const ContactActions = ({ contact, onEdit }) => {
             return;
         }
 
+        if (!contact?.phone) {
+            alert("Contact phone number is missing — cannot start a conversation.");
+            return;
+        }
+
         try {
             await openChatWithContact(contact);
             navigate("/messages");
         } catch (error) {
             console.error("Failed to open chat:", error);
-            alert("Failed to open chat: " + error.message);
+            const msg = error?.response?.data?.message || error.message || "Unknown error";
+            alert("Failed to open chat: " + msg);
         }
     };
 

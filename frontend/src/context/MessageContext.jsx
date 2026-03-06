@@ -19,7 +19,9 @@ export const MessagesProvider = ({ children }) => {
     const [typingUser, setTypingUser] = useState(null);
 
     useEffect(() => {
-        getConversations().then(setConversations);
+        getConversations()
+            .then(setConversations)
+            .catch((err) => console.error("Failed to load conversations:", err));
     }, []);
 
     useEffect(() => {
@@ -28,12 +30,15 @@ export const MessagesProvider = ({ children }) => {
             return;
         }
 
-        joinConversation(activeConversation._id);
-        getMessages(activeConversation._id).then(setMessages);
+        if (joinConversation) joinConversation(activeConversation._id);
+        getMessages(activeConversation._id)
+            .then(setMessages)
+            .catch((err) => console.error("Failed to load messages:", err));
     }, [activeConversation]);
 
     /* 🔹 NEW MESSAGE */
     useEffect(() => {
+        if (!socket) return;
         socket.on("new-message", (msg) => {
             setMessages(prev => [...prev, msg]);
         });
@@ -43,6 +48,7 @@ export const MessagesProvider = ({ children }) => {
 
     /* 🔹 TYPING */
     useEffect(() => {
+        if (!socket) return;
         socket.on("typing", ({ userId, isTyping }) => {
             setTypingUser(isTyping ? userId : null);
         });
@@ -52,6 +58,7 @@ export const MessagesProvider = ({ children }) => {
 
     /* 🔹 MESSAGE SEEN */
     useEffect(() => {
+        if (!socket) return;
         socket.on("message-seen", (updatedMessage) => {
             setMessages(prev =>
                 prev.map(msg =>
@@ -70,17 +77,19 @@ export const MessagesProvider = ({ children }) => {
             p => p._id !== user.id
         )?._id;
 
-        sendSocketMessage({
-            conversationId: activeConversation._id,
-            receiverId,
-            content: text
-        });
+        if (sendSocketMessage) {
+            sendSocketMessage({
+                conversationId: activeConversation._id,
+                receiverId,
+                content: text
+            });
+        }
     };
     const openChatWithContact = async (contact) => {
         if (!contact?._id) {
             throw new Error("Contact ID is missing");
         }
-        
+
         if (!user?.id) {
             throw new Error("User ID is missing");
         }

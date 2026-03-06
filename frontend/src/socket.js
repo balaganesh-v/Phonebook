@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
 //Create ONE socket (reuse it during reloads)
-const SOCKET_URL = "http://localhost:5001";
+const SOCKET_URL = import.meta.env.VITE_API_URL;
 
 // Reuse socket if already created (prevents duplicates in dev)
 if (!window.__APP_SOCKET__) {
