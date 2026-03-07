@@ -8,12 +8,12 @@ import { MessagesProvider } from "./context/MessageContext.jsx";
 
 import LoginForm from "./components/auth/LoginForm";
 import RegisterForm from "./components/auth/RegisterForm";
-import Home from "./pages/Home";
-import PrivateRoute from "./routes/PrivateRoute";
-import Dial from "./pages/Dial";
-import Contacts from "./pages/Contacts";
-import Messages from "./pages/Messages";
-import Favourites from "./pages/Favourites";
+import Home from "./pages/Home.jsx";
+import PrivateRoute from "./routes/PrivateRoute.jsx";
+import Dial from "./pages/Dial.jsx";
+import Contacts from "./pages/Contacts.jsx";
+import Messages from "./pages/Messages.jsx";
+import Favourites from "./pages/Favourites.jsx";
 
 function App() {
     return (

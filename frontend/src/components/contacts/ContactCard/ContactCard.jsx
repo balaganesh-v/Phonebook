@@ -1,5 +1,5 @@
-import { useTheme } from "../../../context/ThemeContext";
-import { useSocket } from "../../../context/SocketContext";
+import { useTheme } from "../../../context/ThemeContext.jsx";
+import { useSocket } from "../../../context/SocketContext.jsx";
 import ContactInfo from "./ContactInfo.jsx";
 import ContactActions from "./ContactActions.jsx";
 import ContactAvatar from "./ContactAvatar.jsx";

@@ -1,6 +1,6 @@
-import { useMessages } from "../../../context/MessageContext";
-import { useAuth } from "../../../context/AuthContext";
-import ConversationCard from "../ConversationCard/ConversationCard";
+import { useMessages } from "../../../context/MessageContext.jsx";
+import { useAuth } from "../../../context/AuthContext.jsx";
+import ConversationCard from "../conversationCard/ConversationCard.jsx";
 import { IoChatbubblesOutline } from "react-icons/io5";
 
 const ConversationList = () => {
@@ -42,11 +42,10 @@ const ConversationList = () => {
                 <div
                     key={conv._id}
                     onClick={() => setActiveConversation(conv)}
-                    className={`cursor-pointer transition-colors ${
-                        activeConversation?._id === conv._id
-                            ? "bg-blue-50 border-r-2 border-blue-500"
-                            : "hover:bg-gray-100"
-                    }`}
+                    className={`cursor-pointer transition-colors ${activeConversation?._id === conv._id
+                        ? "bg-blue-50 border-r-2 border-blue-500"
+                        : "hover:bg-gray-100"
+                        }`}
                 >
                     <ConversationCard
                         conversation={conv}
