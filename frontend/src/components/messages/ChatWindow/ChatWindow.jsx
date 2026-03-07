@@ -1,6 +1,6 @@
-import { useMessages } from "../../../context/MessageContext";
-import { useAuth } from "../../../context/AuthContext";
-import { useSocket } from "../../../context/SocketContext";
+import { useMessages } from "../../../context/MessageContext.jsx";
+import { useAuth } from "../../../context/AuthContext.jsx";
+import { useSocket } from "../../../context/SocketContext.jsx";
 import { useState, useRef, useEffect } from "react";
 import { IoSend } from "react-icons/io5";
 import { BsCheckAll, BsCheck } from "react-icons/bs";
