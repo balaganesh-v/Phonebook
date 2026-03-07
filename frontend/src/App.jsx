@@ -6,8 +6,8 @@ import { ContactProvider } from "./context/ContactContext.jsx";
 import { SocketProvider } from "./context/SocketContext.jsx";
 import { MessagesProvider } from "./context/MessageContext.jsx";
 
-import LoginForm from "./components/Auth/LoginForm";
-import RegisterForm from "./components/Auth/RegisterForm";
+import LoginForm from "./components/auth/LoginForm";
+import RegisterForm from "./components/auth/RegisterForm";
 import Home from "./pages/Home";
 import PrivateRoute from "./routes/PrivateRoute";
 import Dial from "./pages/Dial";
