@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 
-import { AuthProvider } from "../context/AuthContext";
-import { ThemeProvider } from "../context/ThemeContext";
+import { AuthProvider } from "../context/AuthContext.jsx";
+import { ThemeProvider } from "../context/ThemeContext.jsx";
 
 import Navbar from "../layouts/Navbar.jsx";
 import Footer from "../layouts/Footer.jsx";

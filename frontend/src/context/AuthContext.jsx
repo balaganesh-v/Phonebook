@@ -11,7 +11,7 @@ import {
     registerUser,
     logoutUser,
     getCurrentUser
-} from "../services/authService";
+} from "../services/authService.js";
 
 const AuthContext = createContext(null);
 

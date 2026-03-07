@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useContacts } from "../../../context/ContactContext";
+import { useContacts } from "../../../context/ContactContext.jsx";
 
 const AddContactModal = ({ open, onClose }) => {
     const { addContact, loading } = useContacts();
@@ -15,7 +15,7 @@ const AddContactModal = ({ open, onClose }) => {
         notes: "",
     });
 
-    if (!open){
+    if (!open) {
         return null;
     }
 

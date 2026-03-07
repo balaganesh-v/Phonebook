@@ -1,5 +1,5 @@
-import ConversationList from "./ConversationList/ConversationList";
-import ChatWindow from "./ChatWindow/ChatWindow";
+import ConversationList from "./ConversationList/ConversationList.jsx";
+import ChatWindow from "./ChatWindow/ChatWindow.jsx";
 
 const MessagesPage = () => {
     return (

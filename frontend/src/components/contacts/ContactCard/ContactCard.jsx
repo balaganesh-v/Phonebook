@@ -1,8 +1,8 @@
 import { useTheme } from "../../../context/ThemeContext";
 import { useSocket } from "../../../context/SocketContext";
-import ContactInfo from "./ContactInfo";
-import ContactActions from "./ContactActions";
-import ContactAvatar from "./ContactAvatar";
+import ContactInfo from "./ContactInfo.jsx";
+import ContactActions from "./ContactActions.jsx";
+import ContactAvatar from "./ContactAvatar.jsx";
 
 const ContactCard = ({ contact, onEdit }) => {
     const { theme } = useTheme();
@@ -16,10 +16,9 @@ const ContactCard = ({ contact, onEdit }) => {
             className={`p-3 rounded-lg shadow mb-3 transition
                 flex flex-col sm:flex-row gap-3
                 hover:shadow-md
-                ${
-                    theme === "dark"
-                        ? "bg-gray-700 text-white hover:bg-gray-600"
-                        : "bg-gray-200 text-gray-900 hover:bg-gray-300"
+                ${theme === "dark"
+                    ? "bg-gray-700 text-white hover:bg-gray-600"
+                    : "bg-gray-200 text-gray-900 hover:bg-gray-300"
                 }`}
         >
             {/* ✅ pass online status */}

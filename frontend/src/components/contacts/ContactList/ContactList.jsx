@@ -1,5 +1,5 @@
-import { useContacts } from "../../../context/ContactContext";
-import ContactCard from "../ContactCard/ContactCard";
+import { useContacts } from "../../../context/ContactContext.jsx";
+import ContactCard from "../ContactCard/ContactCard.jsx";
 
 const ContactList = ({ onEdit }) => {
     const { contacts, loading } = useContacts();

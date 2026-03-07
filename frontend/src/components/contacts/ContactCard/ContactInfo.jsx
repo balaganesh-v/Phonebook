@@ -1,4 +1,4 @@
-import { useTheme } from "../../../context/ThemeContext";
+import { useTheme } from "../../../context/ThemeContext.jsx";
 
 const ContactInfo = ({ name, phone }) => {
     const { theme } = useTheme();

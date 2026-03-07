@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { RiContactsBookFill } from "react-icons/ri";
-import ContactList from "../components/contacts/ContactList/ContactList";
-import AddContactModal from "../components/contacts/Modal/AddContactModal";
-import EditContactModal from "../components/contacts/Modal/EditContactModal";
-import { useContacts } from "../context/ContactContext";
+import ContactList from "../components/contacts/ContactList/ContactList.jsx";
+import AddContactModal from "../components/contacts/Modal/AddContactModal.jsx";
+import EditContactModal from "../components/contacts/Modal/EditContactModal.jsx";
+import { useContacts } from "../context/ContactContext.jsx";
 
 const Contacts = () => {
     const [openAddContact, setOpenAddContact] = useState(false);
