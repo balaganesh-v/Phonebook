@@ -1,6 +1,6 @@
 import { useMessages } from "../../../context/MessageContext.jsx";
 import { useAuth } from "../../../context/AuthContext.jsx";
-import ConversationCard from "../conversationCard/ConversationCard.jsx";
+import ConversationCard from "../ConversationCard/ConversationCard.jsx";
 import { IoChatbubblesOutline } from "react-icons/io5";
 
 const ConversationList = () => {
