@@ -1,19 +1,21 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { socket, connectSocket, disconnectSocket } from "../socket.js"
-import { useAuth } from "./AuthContext.jsx";
+import { useAuth } from "../hooks/useAuth.js";
 
-const SocketContext = createContext(null);
+export const SocketContext = createContext(null);
 
 export const SocketProvider = ({ children }) => {
+    //Auth
     const { user, isAuthenticated } = useAuth();
+
+    //Socket
     const [me, setMe] = useState(null);
     const [onlineUsers, setOnlineUsers] = useState([]);
 
-    // Connect/disconnect socket based on authentication status
     useEffect(() => {
         if (isAuthenticated && user?.id) {
             connectSocket();
-            
+
             socket.on("me", setMe);
             socket.on("online-users", setOnlineUsers);
 
@@ -42,12 +44,10 @@ export const SocketProvider = ({ children }) => {
         });
     };
 
-    /* 🔹 NEW */
     const sendTypingStatus = ({ conversationId, isTyping }) => {
         socket.emit("typing", { conversationId, isTyping });
     };
 
-    /* 🔹 NEW */
     const sendSeenStatus = ({ conversationId, messageId }) => {
         socket.emit("message-seen", { conversationId, messageId });
     };
@@ -68,5 +68,3 @@ export const SocketProvider = ({ children }) => {
         </SocketContext.Provider>
     );
 };
-
-export const useSocket = () => useContext(SocketContext);

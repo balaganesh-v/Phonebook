@@ -30,15 +30,18 @@ export const disconnectSocket = () => {
     }
 };
 
-//Basic logs (optional)
+
+//If ID is available then show it
 socket.on("connect", () => {
     console.log("✅ Socket connected:", socket.id);
 });
 
+//If ID is not available then disconnects the socket
 socket.on("disconnect", () => {
     console.log("❌ Socket disconnected");
 });
 
+//If ID is not available then show error
 socket.on("connect_error", (err) => {
     console.error("❌ Socket error:", err.message);
 });

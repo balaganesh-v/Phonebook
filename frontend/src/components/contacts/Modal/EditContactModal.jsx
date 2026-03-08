@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useContacts } from "../../../context/ContactContext";
+import { useContacts } from "../../../hooks/useContacts.js"
 
 const EditContactModal = ({ open, onClose }) => {
     const { editingContact, updateContact, loading } = useContacts();

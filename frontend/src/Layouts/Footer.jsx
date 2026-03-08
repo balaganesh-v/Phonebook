@@ -1,7 +1,7 @@
 import React from "react";
 import { FiPhone, FiUsers, FiMessageSquare, FiStar } from "react-icons/fi";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../hooks/useTheme.js";
 
 const Footer = () => {
     const { theme } = useTheme();
@@ -11,10 +11,10 @@ const Footer = () => {
     const isActive = (path) => location.pathname === path;
 
     const buttons = [
-        { label: "Dial", icon: <FiPhone size={22} />, path: "/dial" },
-        { label: "Contacts", icon: <FiUsers size={22} />, path: "/contacts" },
-        { label: "Messages", icon: <FiMessageSquare size={22} />, path: "/messages" },
-        { label: "Favourites", icon: <FiStar size={22} />, path: "/favourites" },
+        { label: "Dial", icon: <FiPhone size={22} />, path: "/dashboard/dial" },
+        { label: "Contacts", icon: <FiUsers size={22} />, path: "/dashboard/contacts" },
+        { label: "Messages", icon: <FiMessageSquare size={22} />, path: "/dashboard/messages" },
+        { label: "Favourites", icon: <FiStar size={22} />, path: "/dashboard/favourites" },
     ];
 
     return (

@@ -4,16 +4,19 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 import { ContactProvider } from "./context/ContactContext.jsx";
 import { SocketProvider } from "./context/SocketContext.jsx";
-import { MessagesProvider } from "./context/MessageContext.jsx";
+import { MessagesProvider } from "./context/MessagesContext.jsx";
 
-import LoginForm from "./components/Auth/LoginForm";
-import RegisterForm from "./components/Auth/RegisterForm";
-import Home from "./pages/Home";
-import PrivateRoute from "./routes/PrivateRoute";
-import Dial from "./pages/Dial";
-import Contacts from "./pages/Contacts";
-import Messages from "./pages/Messages";
-import Favourites from "./pages/Favourites";
+import PrivateRoute from "./routes/PrivateRoute.jsx";
+
+import Landing from "./pages/Landing.jsx";
+import LoginForm from "./components/auth/LoginForm.jsx";
+import RegisterForm from "./components/auth/RegisterForm.jsx";
+
+import Home from "./pages/Home.jsx";        // ← must contain <Outlet />
+import Dial from "./pages/Dial.jsx";
+import Contacts from "./pages/Contacts.jsx";
+import Messages from "./pages/Messages.jsx";
+import Favourites from "./pages/Favourites.jsx";
 
 function App() {
     return (
@@ -24,19 +27,26 @@ function App() {
                         <ContactProvider>
                             <MessagesProvider>
                                 <Routes>
-                                    {/* Public Routes */}
+
+                                    {/* ── Public Routes ── */}
+                                    <Route path="/" element={<Landing />} />
                                     <Route path="/login" element={<LoginForm />} />
                                     <Route path="/register" element={<RegisterForm />} />
 
-                                    {/* Protected Routes */}
+                                    {/*
+                                        ── Protected Layout Route ──
+                                        Home.jsx wraps all dashboard pages via <Outlet />.
+                                        PrivateRoute guards the entire dashboard tree.
+                                    */}
                                     <Route
-                                        path="/"
+                                        path="/dashboard"
                                         element={
                                             <PrivateRoute>
-                                                <Home />
+                                                <Home />  {/* ← renders <Outlet /> inside */}
                                             </PrivateRoute>
                                         }
                                     >
+                                        {/* Default dashboard screen */}
                                         <Route
                                             index
                                             element={
@@ -45,14 +55,17 @@ function App() {
                                                 </h1>
                                             }
                                         />
+
+                                        {/* Nested pages — rendered inside Home's <Outlet /> */}
                                         <Route path="dial" element={<Dial />} />
                                         <Route path="contacts" element={<Contacts />} />
                                         <Route path="messages" element={<Messages />} />
                                         <Route path="favourites" element={<Favourites />} />
                                     </Route>
 
-                                    {/* Fallback */}
+                                    {/* ── Catch-all fallback ── */}
                                     <Route path="*" element={<Navigate to="/" replace />} />
+
                                 </Routes>
                             </MessagesProvider>
                         </ContactProvider>

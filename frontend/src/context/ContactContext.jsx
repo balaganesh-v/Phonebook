@@ -1,14 +1,21 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+    createContext,
+    useEffect,
+    useState,
+    useMemo
+} from "react";
+
 import {
     createContact,
     getContacts,
     updateContactById,
-    deleteContactById,
+    deleteContactById
 } from "../services/contactService";
 
 export const ContactContext = createContext(null);
 
 export const ContactProvider = ({ children }) => {
+
     const [contacts, setContacts] = useState([]);
     const [editingContact, setEditingContact] = useState(null);
     const [searchQuery, setSearchQuery] = useState("");
@@ -49,7 +56,7 @@ export const ContactProvider = ({ children }) => {
         try {
             setLoading(true);
             await updateContactById(id, data);
-            setEditingContact(null); // CLOSE MODAL
+            setEditingContact(null);
             await initializeContacts();
         } catch (err) {
             setError("Failed to update contact");
@@ -70,30 +77,22 @@ export const ContactProvider = ({ children }) => {
         }
     };
 
+    const value = useMemo(() => ({
+        contacts,
+        searchQuery,
+        setSearchQuery,
+        addContact,
+        updateContact,
+        deleteContact,
+        editingContact,
+        setEditingContact,
+        loading,
+        error,
+    }), [contacts, searchQuery, editingContact, loading, error]);
+
     return (
-        <ContactContext.Provider
-            value={{
-                contacts,
-                searchQuery,
-                setSearchQuery,
-                addContact,
-                updateContact,
-                deleteContact,
-                editingContact,
-                setEditingContact,
-                loading,
-                error,
-            }}
-        >
+        <ContactContext.Provider value={value}>
             {children}
         </ContactContext.Provider>
     );
-};
-
-export const useContacts = () => {
-    const context = useContext(ContactContext);
-    if (!context) {
-        throw new Error("useContacts must be used within ContactProvider");
-    }
-    return context;
 };

@@ -1,4 +1,5 @@
-import { useTheme } from "../context/ThemeContext";
+import { useTheme } from "../hooks/useTheme.js";
+import Yuhlogo from "../components/logo/Yuhlogo.jsx"
 
 const Navbar = () => {
     const { theme, toggleTheme } = useTheme();
@@ -12,10 +13,10 @@ const Navbar = () => {
                 }`}
         >
             <div className="flex items-center gap-3 text-xl font-semibold">
-                <span>Yuhnie❤️!!</span>
+                <Yuhlogo />
             </div>
             <button onClick={toggleTheme}
-                className={`flex p-1 text-xl rounded-full text-center align-center justify-center ${theme === "light" ? "bg-gray-700" : "bg-gray-100" }`}
+                className={`flex p-1 text-xl rounded-full text-center align-center justify-center ${theme === "light" ? "bg-gray-700" : "bg-gray-100"}`}
             >
                 {theme === "light" ? "🌙" : "☀️"}
             </button>
