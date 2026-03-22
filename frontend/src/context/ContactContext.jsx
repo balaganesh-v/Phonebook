@@ -9,8 +9,13 @@ import {
     createContact,
     getContacts,
     updateContactById,
-    deleteContactById
-} from "../services/contactService";
+    deleteContactById,
+} from "../services/contactService.js"
+
+import {
+    addContactFavourite as addFavouriteApi,
+    removeContactFavourite as removeFavouriteApi
+} from "../services/favouriteService.js"
 
 export const ContactContext = createContext(null);
 
@@ -77,6 +82,30 @@ export const ContactProvider = ({ children }) => {
         }
     };
 
+    const addContactAsFavourite = async (id) => {
+        try {
+            setLoading(true);
+            await addFavouriteApi(id);       // POST /favourite/:id
+            await initializeContacts();
+        } catch (err) {
+            setError("Failed to add contact as favourite");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const removeContactAsFavourite = async (id) => {
+        try {
+            setLoading(true);
+            await removeFavouriteApi(id);    // DELETE /favourite/:id
+            await initializeContacts();
+        } catch (err) {
+            setError("Failed to remove contact as favourite");
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const value = useMemo(() => ({
         contacts,
         searchQuery,
@@ -86,6 +115,8 @@ export const ContactProvider = ({ children }) => {
         deleteContact,
         editingContact,
         setEditingContact,
+        addContactAsFavourite,
+        removeContactAsFavourite,
         loading,
         error,
     }), [contacts, searchQuery, editingContact, loading, error]);

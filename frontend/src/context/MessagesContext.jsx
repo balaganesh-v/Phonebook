@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useSocket } from "../hooks/useSocket.js";
 import { useAuth } from "../hooks/useAuth.js";
+
 import {
     getConversations,
     getMessages,
@@ -66,9 +67,10 @@ export const MessagesProvider = ({ children }) => {
     const sendMessage = (text) => {
         if (!text.trim() || !activeConversation) return;
 
+        // ✅ Fixed — use userId to match your schema
         const receiverId = activeConversation.participants.find(
-            p => p._id !== user.id
-        )?._id;
+            p => String(p.userId) !== String(user.id)
+        )?.userId;
 
         sendSocketMessage({
             conversationId: activeConversation._id,
