@@ -2,63 +2,61 @@ import axios from "axios";
 
 const api = axios.create({
     baseURL: "http://localhost:5001/contacts",
-    withCredentials: true, // backend handles auth via cookies
+    withCredentials: true,
     headers: { "Content-Type": "application/json" },
 });
 
-// CREATE
+// CREATE CONTACT FOR THE CURRENT USER
 export const createContact = async (data) => {
-    try{
+    try {
         const res = await api.post("/", data);
-        return res.data;
-    }
-    catch (error) {
+        return res.data.contact;
+    } catch (error) {
         console.error("Error creating contact:", error);
         throw error;
     }
 };
 
-// READ ALL
+// READ ALL CONTACTS FOR THE CURRENT USER
 export const getContacts = async () => {
-    try{
+    try {
         const res = await api.get("/");
         return res.data;
-    }catch(error){
+    } catch (error) {
         console.error("Error fetching contacts:", error);
         throw error;
     }
-
 };
 
-// READ ONE
+// READ ONE CONTACT FOR THE CURRENT USER
 export const getContactById = async (id) => {
-    try{
+    try {
         const res = await api.get(`/${id}`);
         return res.data;
-    }catch(error){
-        console.error("Error fetching contact by ID :", error);
+    } catch (error) {
+        console.error("Error fetching contact by ID:", error);
         throw error;
     }
 };
 
-// UPDATE
+// UPDATE CONTACT FOR THE CURRENT USER
 export const updateContactById = async (id, data) => {
-    try{
+    try {
         const res = await api.put(`/${id}`, data);
         return res.data;
-    }catch(error){
-        console.error("Error updating contact by ID :", error);
+    } catch (error) {
+        console.error("Error updating contact by ID:", error);
         throw error;
     }
 };
 
-// DELETE
+// DELETE CONTACT FOR THE CURRENT USER
 export const deleteContactById = async (id) => {
-    try{
+    try {
         const res = await api.delete(`/${id}`);
         return res.data;
-    }catch(error){
-        console.error("Error deleting contact by ID :", error);
+    } catch (error) {
+        console.error("Error deleting contact by ID:", error);
         throw error;
     }
 };

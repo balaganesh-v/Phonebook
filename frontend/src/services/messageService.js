@@ -6,6 +6,7 @@ const api = axios.create({
     headers: { "Content-Type": "application/json" },
 });
 
+// READ ALL CONVERSATIONS FOR THE CURRENT USER
 export const getConversations = async () => {
     try {
         const res = await api.get("/conversations");
@@ -16,6 +17,7 @@ export const getConversations = async () => {
     }
 };
 
+// READ ALL MESSAGES FOR THE CURRENT USER
 export const getMessages = async (conversationId) => {
     try {
         const res = await api.get(`/${conversationId}`);
@@ -26,16 +28,16 @@ export const getMessages = async (conversationId) => {
     }
 };
 
-// ✅ Fixed: correct endpoint + correct payload shape
+// CREATE CONVERSATION FOR THE CURRENT USER
 export const startConversation = async (receiverPhone, contactName) => {
     try {
         console.log("📤 Starting conversation with:", { receiverPhone, contactName });
-        
+
         const res = await api.post("/user/starts/conversation", {
             receiverPhone,
             contactName,
         });
-        
+
         console.log("✅ Conversation created:", res.data);
         return res.data;
     } catch (error) {
