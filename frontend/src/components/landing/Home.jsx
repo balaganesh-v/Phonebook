@@ -1,9 +1,10 @@
 import React from 'react'
-import Navbar from './Navbar.jsx';
-import Hero from './Hero.jsx';
-import Features from './Features.jsx';
-import Chatpreview from './Chatpreview.jsx';
-import Footer from './Footer.jsx';
+import Navbar from './layouts/Navbar.jsx';
+import Hero from './sections/Hero.jsx';
+import Features from './sections/Features.jsx';
+import Chatpreview from './sections/Chatpreview.jsx';
+import Contacts from './sections/Contacts.jsx';
+import Footer from './layouts/Footer.jsx';
 
 const Home = () => {
     return (
@@ -11,6 +12,7 @@ const Home = () => {
             <Hero />
             <Features />
             <Chatpreview />
+            <Contacts />
         </div>
     )
 }
