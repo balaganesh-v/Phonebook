@@ -15,7 +15,6 @@ export const loginUser = async ({ phone, password }) => {
         console.error("Error logging in:", error);
         throw error;
     }
-
 };
 
 //REGISTER THE SPECIFIC USER
@@ -27,7 +26,6 @@ export const registerUser = async ({ name, email, phone, password }) => {
         console.error("Error registering user:", error);
         throw error;
     }
-
 };
 
 //LOGOUT THE SPECIFIC USER
@@ -39,7 +37,6 @@ export const logoutUser = async () => {
         console.error("Error logging out:", error);
         throw error;
     }
-
 };
 
 //GET THE CURRENT USER
@@ -51,6 +48,5 @@ export const getCurrentUser = async () => {
         console.error("Error getting current user:", error);
         throw error;
     }
-
 };
 

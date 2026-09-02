@@ -1,15 +1,24 @@
-import React from 'react';
-import yuh from "../../assets/yuhChat.png";
+import React from "react";
+import yuh from "../../assets/phone-chat.png";
 
 const Yuhlogo = () => {
     return (
-        <div>
-            <div className="flex items-center gap-2">
-                <img src={yuh} className="w-10 h-10 rounded-lg" />
-                <span className="text-xl font-bold text-white ">yuhnie !!</span>
-            </div>
-        </div>
-    )
-}
+        <div className="flex items-center gap-3 cursor-pointer select-none">
 
-export default Yuhlogo
+            {/* Logo */}
+            <img
+                src={yuh}
+                alt="Yuhnie Logo"
+                className="w-8 h-8 object-cover"
+            />
+
+            {/* Text */}
+            <h1 className="text-white text-xl [font-family:'Pacifico',cursive]">
+                Yuhnie!!
+            </h1>
+
+        </div>
+    );
+};
+
+export default Yuhlogo;

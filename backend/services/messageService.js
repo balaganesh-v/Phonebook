@@ -5,20 +5,18 @@ import {
     createConversation,
     createMessage,
     updateConversationById,
-    updateMessageStatus
+    updateMessageStatus,
+    deleteConversationById,
+    clearConversationById
 } from "../repositories/messageRepository.js";
 import User from "../models/Users.js";
 
-// API Handlers
+// Business Logic for Conversations
 export const fetchConversations = async (userId) => {
     return getUserConversations(userId);
 };
 
-export const fetchMessages = async (conversationId) => {
-    return getMessagesByConversationId(conversationId);
-};
-
-export const startsConversation = async (senderId,receiverPhone,contactName = null) => {
+export const startsConversation = async (senderId, receiverPhone, contactName = null) => {
 
     // 1️⃣ Sender
     const sender = await User.findById(senderId).select("_id name phone");
@@ -52,12 +50,12 @@ export const startsConversation = async (senderId,receiverPhone,contactName = nu
     // 5️⃣ Participants snapshot
     const participants = [
         {
-            _id: sender._id,
+            userId: sender._id,
             name: sender.name,
             phone: sender.phone
         },
         {
-            _id: receiver._id,
+            userId: receiver._id,
             name: contactName || receiver.name,
             phone: receiver.phone
         }
@@ -87,8 +85,20 @@ export const startsConversation = async (senderId,receiverPhone,contactName = nu
     return conversation;
 };
 
+export const deleteConversation = async (conversationId) => {
+    return deleteConversationById(conversationId);
+};
 
-// Socket Handlers
+export const clearConversation = async (conversationId) => {
+    return clearConversationById(conversationId);
+};
+
+
+// Business and Socket Logic for the Messages
+export const fetchMessages = async (conversationId) => {
+    return getMessagesByConversationId(conversationId);
+};
+
 export const sendMessage = async ({
     conversationId,
     sender,

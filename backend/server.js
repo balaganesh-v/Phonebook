@@ -24,24 +24,33 @@ const io = new Server(server, {
 // Socket auth middleware
 io.use(async (socket, next) => {
     try {
+        //Get the raw cookies from the headers
         const rawCookie = socket.request.headers.cookie;
-        if (!rawCookie){
+        if (!rawCookie) {
             throw new Error("No Cookies found in the headers");
         }
+
+        //Parse the raw cookies
         const cookies = cookie.parse(rawCookie);
+
+        //Get the token from the cookies
         const token = cookies.token;
-        if (!token){
+        if (!token) {
             throw new Error("Unauthorized Access: No token provided");
         }
 
         // Verify token and attach full user document to the socket
         const decoded = verifyToken(token);
+
+        // User verification
         const user = await Users.findById(decoded.id).select("-password");
         if (!user) {
             throw new Error("Unauthorized: User not found");
         }
 
+        // Attach user to socket
         socket.user = user;
+
         next();
     } catch (err) {
         next(err);

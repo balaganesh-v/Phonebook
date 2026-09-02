@@ -4,7 +4,7 @@ import {
     getAllContacts,
     getContactById,
     updateContact,
-    deleteContact
+    deleteContact,
 } from "../controllers/contactController.js";
 
 import { authenticate } from "../middleware/authMiddleware.js";
@@ -16,6 +16,8 @@ router.use(authenticate);
 
 router.post("/", createContact);
 router.get("/", getAllContacts);
+
+// ✅ Dynamic :id routes AFTER
 router.get("/:id", getContactById);
 router.put("/:id", updateContact);
 router.delete("/:id", deleteContact);

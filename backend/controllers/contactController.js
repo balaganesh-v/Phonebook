@@ -3,13 +3,16 @@ import {
     getUserContacts,
     getUserContactById,
     updateUserContact,
-    deleteUserContact
+    deleteUserContact,
 } from "../services/contactService.js";
 
 export const createContact = async (req, res, next) => {
     try {
         const contact = await createNewContact(req.body, req.user);
-        res.status(201).json(contact);
+        res.status(201).json({
+            "contact": contact,
+            "message": "Contact created successfully"
+        });
     } catch (error) {
         next(error);
     }

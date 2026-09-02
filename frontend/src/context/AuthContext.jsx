@@ -1,5 +1,17 @@
-import React, { createContext, useEffect, useState, useMemo } from "react";
-import { loginUser, registerUser, logoutUser, getCurrentUser } from "../services/authService";
+import React, {
+    createContext,
+    useEffect,
+    useState,
+    useMemo
+} from "react";
+
+import {
+    loginUser,
+    registerUser,
+    logoutUser,
+    getCurrentUser
+} from "../services/authService";
+
 
 export const AuthContext = createContext(null);
 

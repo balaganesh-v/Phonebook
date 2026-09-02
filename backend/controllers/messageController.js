@@ -6,7 +6,7 @@ import {
     markMessageSeen
 } from "../services/messageService.js";
 
-// API Handlers
+// API Handlers for Conversations
 export const getConversations = async (req, res) => {
     try {
         const conversations = await fetchConversations(req.user._id || req.user.id);
@@ -16,20 +16,10 @@ export const getConversations = async (req, res) => {
     }
 };
 
-export const getMessages = async (req, res) => {
-    try {
-        const { conversationId } = req.params;
-        const messages = await fetchMessages(conversationId);
-        res.json(messages);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-};
-
 export const userStartsConversation = async (req, res) => {
     try {
         console.log("📨 req.user:", req.user);
-        
+
         const senderId = req.user._id || req.user.id;
         const { receiverPhone, contactName } = req.body;
 
@@ -65,7 +55,37 @@ export const userStartsConversation = async (req, res) => {
     }
 };
 
+export const deleteConversations = async (req, res) => {
+    try {
+        const { conversationId } = req.params;
+        const conversation = await deleteConversation(conversationId);
+        res.json(conversation);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
 
+export const clearConversations = async (req, res) => {
+    try {
+        const { conversationId } = req.params;
+        const conversation = await clearConversation(conversationId);
+        res.json(conversation);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+
+//API Handler for the Messages
+export const getMessages = async (req, res) => {
+    try {
+        const { conversationId } = req.params;
+        const messages = await fetchMessages(conversationId);
+        res.json(messages);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
 
 export const handleSendMessage = async (io, socket, data) => {
     try {

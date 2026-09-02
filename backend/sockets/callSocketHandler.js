@@ -1,37 +1,122 @@
-// sockets/callSocketHandler.js
 import {
-    handleCallUser,
-    handleAnswerCall,
-    handleEndCall,
-} from "../controllers/callController.js";
+    getOnlineUsers
+} from "./onlineUsers.js";
 
 const callSocketHandler = (io, socket) => {
 
-    console.log("Call socket handler initialized :", socket.id);
+    console.log("📞 Call socket initialized:", socket.id);
+    const userId = socket.user?._id?.toString();
 
-    // Send back to frontend socket ID and user info
+    // Send own socket + user info
     socket.emit("me", {
         socketId: socket.id,
         user: socket.user
     });
 
+    // =========================
+    // 📞 CALL USER (RINGING)
+    // =========================
+    socket.on("call-user", ({ to }) => {
+        const onlineUsers = getOnlineUsers();
+        const target = onlineUsers.find(u => u.userId === to);
 
-    // Handle call events
-    socket.on("call-user", (data) => {
-        handleCallUser(io, data);
+        if (!target) {
+            socket.emit("call-error", { message: "User is offline" });
+            return;
+        }
+
+        io.to(target.socketId).emit("incoming-call", {
+            from: userId,
+            callerInfo: socket.user
+        });
     });
-    
-    // Answer call event
-    socket.on("answer-call", (data) => {
-        handleAnswerCall(io, data);
+
+    // =========================
+    // ✅ ACCEPT CALL
+    // =========================
+    socket.on("accept-call", ({ to }) => {
+        const onlineUsers = getOnlineUsers();
+        const target = onlineUsers.find(u => u.userId === to);
+
+        if (!target) return;
+
+        io.to(target.socketId).emit("call-accepted", {
+            by: userId
+        });
     });
-    
-    // End call event
-    socket.on("end-call", (data) => {
-        handleEndCall(io, data);
+
+    // =========================
+    // ❌ REJECT CALL
+    // =========================
+    socket.on("reject-call", ({ to }) => {
+        const onlineUsers = getOnlineUsers();
+        const target = onlineUsers.find(u => u.userId === to);
+
+        if (!target) return;
+
+        io.to(target.socketId).emit("call-rejected", {
+            by: userId
+        });
     });
-    
-    
+
+    // =========================
+    // 📡 OFFER (WebRTC)
+    // =========================
+    socket.on("offer", ({ to, offer }) => {
+        const onlineUsers = getOnlineUsers();
+        const target = onlineUsers.find(u => u.userId === to);
+
+        if (!target) return;
+
+        io.to(target.socketId).emit("offer", {
+            from: userId,
+            offer
+        });
+    });
+
+    // =========================
+    // 📡 ANSWER (WebRTC)
+    // =========================
+    socket.on("answer", ({ to, answer }) => {
+        const onlineUsers = getOnlineUsers();
+        const target = onlineUsers.find(u => u.userId === to);
+
+        if (!target) return;
+
+        io.to(target.socketId).emit("answer", {
+            from: userId,
+            answer
+        });
+    });
+
+    // =========================
+    // 🌐 ICE CANDIDATES
+    // =========================
+    socket.on("ice-candidate", ({ to, candidate }) => {
+        const onlineUsers = getOnlineUsers();
+        const target = onlineUsers.find(u => u.userId === to);
+
+        if (!target) return;
+
+        io.to(target.socketId).emit("ice-candidate", {
+            from: userId,
+            candidate
+        });
+    });
+
+    // =========================
+    // 🔚 END CALL
+    // =========================
+    socket.on("end-call", ({ to }) => {
+        const onlineUsers = getOnlineUsers();
+        const target = onlineUsers.find(u => u.userId === to);
+
+        if (!target) return;
+
+        io.to(target.socketId).emit("call-ended", {
+            by: userId
+        });
+    });
 };
 
 export default callSocketHandler;

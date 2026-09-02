@@ -1,6 +1,6 @@
 import { registerNewUser, loginUser } from "../services/userAuthService.js";
 
-//Authentication Details are implemented here
+//Registration Details are implemented here
 export const register = async (req, res, next) => {
     try {
         const result = await registerNewUser(req);
@@ -19,7 +19,7 @@ export const register = async (req, res, next) => {
     }
 };
 
-//LOGIN Details are implemented here
+//Login Details are implemented here
 export const login = async (req, res, next) => {
     try {
         const result = await loginUser(req);
@@ -38,6 +38,7 @@ export const login = async (req, res, next) => {
     }
 };
 
+//Profile Details are implemented here
 export const profile = async (req, res, next) => {
     try {
         const user = req.user;
@@ -55,6 +56,7 @@ export const profile = async (req, res, next) => {
     }
 };
 
+//Logout Details are implemented here
 export const logout = async (req, res, next) => {
     try {
         // clear cookie using Lax as well (sameSite policy does not affect clearing)
@@ -63,7 +65,6 @@ export const logout = async (req, res, next) => {
             sameSite: "Lax",
             secure: false,    // must be false for HTTP localhost
         });
-
         res.status(200).json({ message: "Logged out successfully" });
     } catch (error) {
         next(error);
